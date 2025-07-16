@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { MediaDisplay } from "@/components/MediaDisplay";
 
 const apartmentFAQData = [
   {
@@ -88,6 +89,11 @@ export const ApartmentFAQ = () => {
                   <div className="whitespace-pre-line text-muted-foreground">
                     {item.answer}
                   </div>
+                  {item.question === "Куда выбросить мусор?" && (
+                    <div className="mt-4">
+                      <MediaDisplay category="trash_location" />
+                    </div>
+                  )}
                 </AccordionContent>
               </AccordionItem>
             ))}
@@ -115,6 +121,26 @@ export const ApartmentFAQ = () => {
                   <div className="whitespace-pre-line text-muted-foreground">
                     {item.answer}
                   </div>
+                  {item.question === "Как заказать экскурсию?" && (
+                    <div className="mt-4">
+                      <MediaDisplay category="excursion_info" />
+                    </div>
+                  )}
+                  {item.question === "Как заказать авто?" && (
+                    <div className="mt-4">
+                      <MediaDisplay category="car_rental" />
+                    </div>
+                  )}
+                  {item.question === "Описание территории?" && (
+                    <div className="mt-4">
+                      <MediaDisplay category="territory_description" />
+                    </div>
+                  )}
+                  {item.question === "Как дойти до пляжа?" && (
+                    <div className="mt-4">
+                      <MediaDisplay category="beach_directions" />
+                    </div>
+                  )}
                 </AccordionContent>
               </AccordionItem>
             ))}
