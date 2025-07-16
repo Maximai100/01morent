@@ -1,5 +1,17 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { 
+  Carousel, 
+  CarouselContent, 
+  CarouselItem, 
+  CarouselNext, 
+  CarouselPrevious 
+} from "@/components/ui/carousel";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface MediaFile {
   id: string;
@@ -66,61 +78,118 @@ export const MediaDisplay = ({
     );
   }
 
+  // Determine MIME type for video based on file extension
+  const getVideoMimeType = (filename: string) => {
+    const ext = filename.toLowerCase().split('.').pop();
+    switch (ext) {
+      case 'mp4': return 'video/mp4';
+      case 'webm': return 'video/webm';
+      case 'ogg': return 'video/ogg';
+      case 'avi': return 'video/avi';
+      case 'mov': return 'video/quicktime';
+      default: return 'video/mp4';
+    }
+  };
+
+  if (horizontal) {
+    // Carousel view for horizontal layout
+    return (
+      <div className={`relative ${className}`}>
+        <Carousel className="w-full">
+          <CarouselContent className="-ml-2 md:-ml-4">
+            {mediaFiles.map((file) => {
+              const fileUrl = file.file_path;
+              
+              return (
+                <CarouselItem key={file.id} className="pl-2 md:pl-4 basis-auto">
+                  <div className="flex-shrink-0 w-80">
+                    {file.file_type === 'image' ? (
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <img 
+                            src={fileUrl}
+                            alt={file.filename}
+                            loading="lazy"
+                            onError={(e) => {
+                              console.error('Image failed to load:', fileUrl);
+                              e.currentTarget.style.display = 'none';
+                            }}
+                            className="object-cover rounded-xl shadow-gentle hover:shadow-ocean transition-all duration-300 w-80 h-64 cursor-pointer hover:scale-105"
+                          />
+                        </DialogTrigger>
+                        <DialogContent className="max-w-4xl max-h-[90vh] p-2">
+                          <img 
+                            src={fileUrl}
+                            alt={file.filename}
+                            className="w-full h-full object-contain rounded-lg"
+                          />
+                        </DialogContent>
+                      </Dialog>
+                    ) : file.file_type === 'video' ? (
+                      <video 
+                        controls
+                        className="rounded-xl shadow-gentle w-80 max-h-64"
+                        preload="metadata"
+                      >
+                        <source src={fileUrl} type={getVideoMimeType(file.filename)} />
+                        Ваш браузер не поддерживает воспроизведение видео.
+                      </video>
+                    ) : null}
+                  </div>
+                </CarouselItem>
+              );
+            })}
+          </CarouselContent>
+          <CarouselPrevious className="left-2" />
+          <CarouselNext className="right-2" />
+        </Carousel>
+      </div>
+    );
+  }
+
+  // Grid view for non-horizontal layout
   return (
-    <div className={horizontal ? 
-      `flex gap-4 overflow-x-auto pb-4 ${className}` : 
-      `grid gap-4 ${className}`
-    }>
+    <div className={`grid gap-4 ${className}`}>
       {mediaFiles.map((file) => {
-        // file_path уже содержит полный URL, не нужно добавлять базовый URL
         const fileUrl = file.file_path;
-        
-        console.log('MediaDisplay file:', file.filename, 'type:', file.file_type, 'url:', fileUrl);
         
         if (file.file_type === 'image') {
           return (
-            <div key={file.id} className={`relative group ${horizontal ? 'flex-shrink-0 w-80' : ''}`}>
-              <img 
-                src={fileUrl}
-                alt={file.description || file.filename}
-                loading="lazy"
-                onError={(e) => {
-                  console.error('Image failed to load:', fileUrl);
-                  e.currentTarget.style.display = 'none';
-                }}
-                onLoad={() => console.log('Image loaded successfully:', fileUrl)}
-                className={`object-cover rounded-xl shadow-gentle hover:shadow-ocean transition-all duration-300 ${
-                  horizontal ? 'w-80 h-64' : 'w-full h-64'
-                }`}
-              />
-              {file.description && (
-                <p className="mt-2 text-sm text-muted-foreground text-center">
-                  {file.description}
-                </p>
-              )}
-            </div>
+            <Dialog key={file.id}>
+              <DialogTrigger asChild>
+                <img 
+                  src={fileUrl}
+                  alt={file.filename}
+                  loading="lazy"
+                  onError={(e) => {
+                    console.error('Image failed to load:', fileUrl);
+                    e.currentTarget.style.display = 'none';
+                  }}
+                  className="object-cover rounded-xl shadow-gentle hover:shadow-ocean transition-all duration-300 w-full h-64 cursor-pointer hover:scale-105"
+                />
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl max-h-[90vh] p-2">
+                <img 
+                  src={fileUrl}
+                  alt={file.filename}
+                  className="w-full h-full object-contain rounded-lg"
+                />
+              </DialogContent>
+            </Dialog>
           );
         }
         
         if (file.file_type === 'video') {
           return (
-            <div key={file.id} className={`relative group ${horizontal ? 'flex-shrink-0 w-80' : ''}`}>
-              <video 
-                controls
-                className={`rounded-xl shadow-gentle ${
-                  horizontal ? 'w-80 max-h-64' : 'w-full max-h-64'
-                }`}
-                preload="metadata"
-              >
-                <source src={fileUrl} type={file.file_type} />
-                Ваш браузер не поддерживает воспроизведение видео.
-              </video>
-              {file.description && (
-                <p className="mt-2 text-sm text-muted-foreground text-center">
-                  {file.description}
-                </p>
-              )}
-            </div>
+            <video 
+              key={file.id}
+              controls
+              className="rounded-xl shadow-gentle w-full max-h-64"
+              preload="metadata"
+            >
+              <source src={fileUrl} type={getVideoMimeType(file.filename)} />
+              Ваш браузер не поддерживает воспроизведение видео.
+            </video>
           );
         }
         

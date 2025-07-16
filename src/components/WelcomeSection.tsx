@@ -8,14 +8,12 @@ export const WelcomeSection = () => {
         ДОБРО ПОЖАЛОВАТЬ!
       </h2>
       
-      <div className="overflow-x-auto">
-        <MediaDisplay 
-          category="welcome_photos" 
-          fallbackText="Фотографии добавляются через панель администратора"
-          className="min-h-[300px] flex gap-4 overflow-x-auto pb-4"
-          horizontal={true}
-        />
-      </div>
+      <MediaDisplay 
+        category="welcome_photos" 
+        fallbackText="Фотографии добавляются через панель администратора"
+        className="min-h-[300px]"
+        horizontal={true}
+      />
     </Card>
   );
 };
