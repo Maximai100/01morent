@@ -75,13 +75,15 @@ export const ApartmentInfo = ({
             Даты бронирования
           </h3>
         </div>
-        <div className="space-y-3">
-          <p className="text-foreground leading-relaxed">
-            <span className="font-semibold text-primary-dark">Заезд:</span> {checkIn}
-          </p>
-          <p className="text-foreground leading-relaxed">
-            <span className="font-semibold text-primary-dark">Выезд:</span> {checkOut}
-          </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-gradient-to-r from-emerald-50 to-primary/5 border-2 border-emerald-200 rounded-xl p-4 text-center">
+            <p className="text-sm font-medium text-emerald-700 mb-1">ЗАЕЗД</p>
+            <p className="text-lg font-bold text-emerald-800">{checkIn}</p>
+          </div>
+          <div className="bg-gradient-to-r from-rose-50 to-gold/5 border-2 border-rose-200 rounded-xl p-4 text-center">
+            <p className="text-sm font-medium text-rose-700 mb-1">ВЫЕЗД</p>
+            <p className="text-lg font-bold text-rose-800">{checkOut}</p>
+          </div>
         </div>
       </Card>
 

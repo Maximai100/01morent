@@ -26,14 +26,14 @@ export const WaveDivider = ({
         xmlns="http://www.w3.org/2000/svg"
       >
         <path 
-          d="M0,60 C300,120 900,0 1200,60 L1200,120 L0,120 Z" 
+          d="M0,80 C150,60 350,100 500,80 C650,60 850,100 1000,80 C1100,70 1150,75 1200,80 L1200,120 L0,120 Z" 
           fill={getWaveColor()}
-          fillOpacity={variant === 'subtle' ? 0.1 : 0.15}
+          fillOpacity={variant === 'subtle' ? 0.15 : 0.2}
         />
         <path 
-          d="M0,80 C400,140 800,20 1200,80 L1200,120 L0,120 Z" 
+          d="M0,100 C200,85 400,115 600,100 C750,90 900,110 1050,100 C1125,95 1162,98 1200,100 L1200,120 L0,120 Z" 
           fill={getWaveColor()}
-          fillOpacity={variant === 'subtle' ? 0.05 : 0.08}
+          fillOpacity={variant === 'subtle' ? 0.08 : 0.12}
         />
       </svg>
     </div>
