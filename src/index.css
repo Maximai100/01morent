@@ -8,21 +8,21 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Ocean Blue Theme - inspired by Sochi seascape */
+    /* MORENT Brand Theme - Deep Navy Blue */
     --background: 0 0% 100%;
-    --foreground: 210 22% 22%;
+    --foreground: 210 50% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 210 22% 22%;
+    --card-foreground: 210 50% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 22% 22%;
+    --popover-foreground: 210 50% 15%;
 
-    /* Deep Ocean Blue */
-    --primary: 210 55% 25%;
+    /* MORENT Deep Navy Blue */
+    --primary: 210 60% 15%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 210 45% 35%;
-    --primary-glow: 210 65% 45%;
+    --primary-light: 210 50% 25%;
+    --primary-glow: 210 55% 35%;
 
     /* Warm Beach Sand */
     --secondary: 35 25% 85%;
