@@ -22,11 +22,15 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222 84% 5%;
 
-    /* MORENT Deep Blue from logo */
+    /* MORENT Deep Blue from logo - Full Gradient Palette */
     --primary: 211 85% 24%;
     --primary-foreground: 0 0% 100%;
     --primary-light: 211 70% 35%;
     --primary-glow: 211 60% 50%;
+    --primary-lighter: 211 50% 65%;
+    --primary-lightest: 211 40% 80%;
+    --primary-dark: 211 95% 18%;
+    --primary-darkest: 211 100% 12%;
 
     /* Sandy Neutral */
     --secondary: 42 20% 90%;
@@ -36,9 +40,12 @@ All colors MUST be HSL.
     --muted: 42 15% 92%;
     --muted-foreground: 210 15% 50%;
 
-    /* Sun Accent - #FDBB3B */
+    /* Sun Accent - #FDBB3B Gold Strategic */
     --accent: 42 93% 60%;
     --accent-foreground: 222 84% 5%;
+    --gold: 42 98% 62%;
+    --gold-light: 42 85% 75%;
+    --gold-dark: 42 100% 48%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
@@ -183,8 +190,57 @@ All colors MUST be HSL.
     @apply skeleton h-12 w-12 rounded-full;
   }
 
-  /* Copy Button Enhancement */
+  /* Copy Button Enhancement & Code Button Pulse */
   .copy-success {
     @apply animate-scale-in bg-emerald-500 text-white;
+  }
+  
+  .pulse-code {
+    @apply animate-glow-pulse bg-gradient-to-r from-gold to-accent text-white font-bold;
+  }
+  
+  /* Enhanced Typography Hierarchy */
+  h1 { @apply text-4xl md:text-6xl lg:text-7xl font-playfair font-bold leading-tight; }
+  h2 { @apply text-3xl md:text-4xl lg:text-5xl font-playfair font-semibold leading-tight; }
+  h3 { @apply text-xl md:text-2xl lg:text-3xl font-manrope font-semibold leading-snug; }
+  h4 { @apply text-lg md:text-xl font-manrope font-medium leading-snug; }
+  h5 { @apply text-base md:text-lg font-manrope font-medium leading-normal; }
+  h6 { @apply text-sm md:text-base font-manrope font-medium leading-normal; }
+  
+  p { @apply text-base leading-relaxed font-manrope; }
+  .text-lg { @apply leading-relaxed; }
+  .text-xl { @apply leading-relaxed; }
+  
+  /* Enhanced Interactive States */
+  .state-loading { @apply opacity-70 pointer-events-none animate-pulse; }
+  .state-error { @apply border-destructive bg-destructive/10 text-destructive; }
+  .state-success { @apply border-emerald-500 bg-emerald-50 text-emerald-700; }
+  
+  /* Stagger Animation */
+  .stagger-item {
+    @apply opacity-0 translate-y-8;
+    animation: fade-in 0.6s ease-out forwards;
+  }
+  .stagger-item:nth-child(1) { animation-delay: 0.1s; }
+  .stagger-item:nth-child(2) { animation-delay: 0.2s; }
+  .stagger-item:nth-child(3) { animation-delay: 0.3s; }
+  .stagger-item:nth-child(4) { animation-delay: 0.4s; }
+  .stagger-item:nth-child(5) { animation-delay: 0.5s; }
+  .stagger-item:nth-child(6) { animation-delay: 0.6s; }
+  
+  /* Wave Divider */
+  .wave-divider {
+    @apply relative overflow-hidden;
+  }
+  .wave-divider::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-4;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1200 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,60 C300,120 900,0 1200,60 L1200,120 L0,120 Z' fill='%23006CFF' fill-opacity='0.1'/%3E%3C/svg%3E") repeat-x;
+    background-size: 1200px 120px;
+  }
+  
+  /* Touch-Friendly Buttons */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
   }
 }

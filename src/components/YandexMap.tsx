@@ -1,19 +1,19 @@
 import { Card } from "@/components/ui/card";
-import { MapPin } from "lucide-react";
+import { MapPin, Navigation } from "lucide-react";
 
 export const YandexMap = () => {
   return (
-    <Card className="p-8 shadow-gentle">
+    <Card className="stagger-item p-8 shadow-premium hover-lift overflow-hidden">
       <div className="flex items-center gap-4 mb-6">
-        <MapPin className="w-8 h-8 text-primary" />
+        <MapPin className="w-8 h-8 text-gold" />
         <div>
-          <h3 className="text-2xl font-bold font-playfair text-primary uppercase">МЕСТОПОЛОЖЕНИЕ</h3>
-          <p className="text-muted-foreground">Нагорный тупик 13 корпус Б, Сочи</p>
+          <h3 className="uppercase text-gradient">МЕСТОПОЛОЖЕНИЕ</h3>
+          <p className="text-muted-foreground leading-relaxed">Нагорный тупик 13 корпус Б, Сочи</p>
         </div>
       </div>
       
       <div 
-        className="rounded-xl overflow-hidden shadow-gentle cursor-pointer hover:shadow-ocean transition-shadow"
+        className="group rounded-xl overflow-hidden shadow-gentle cursor-pointer hover:shadow-premium transition-all duration-300 hover-lift border-2 border-primary/20 hover:border-gold/40"
         onClick={() => {
           const address = encodeURIComponent("Нагорный тупик 13 корпус Б, Сочи");
           window.open(`https://yandex.ru/maps/?text=${address}&rtext=~${address}&mode=routes`, '_blank');
@@ -30,12 +30,15 @@ export const YandexMap = () => {
         />
       </div>
       
-      <div className="mt-4 p-4 bg-primary/5 rounded-xl">
-        <p className="text-sm text-muted-foreground text-center mb-2">
-          📍 <strong>Адрес:</strong> Нагорный тупик 13 корпус Б, Сочи
-        </p>
-        <p className="text-xs text-muted-foreground text-center">
-          Нажмите на карту, чтобы построить маршрут
+      <div className="mt-6 p-6 bg-gradient-to-r from-primary/5 to-gold/5 rounded-xl border border-gold/20">
+        <div className="flex items-center justify-center gap-2 mb-3">
+          <Navigation className="w-5 h-5 text-gold" />
+          <p className="text-base text-primary-dark font-semibold text-center">
+            Нагорный тупик 13 корпус Б, Сочи
+          </p>
+        </div>
+        <p className="text-sm text-muted-foreground text-center leading-relaxed">
+          Нажмите на карту, чтобы построить маршрут в Яндекс.Картах
         </p>
       </div>
     </Card>

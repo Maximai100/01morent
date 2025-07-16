@@ -22,11 +22,11 @@ const buttonVariants = cva(
         glass: "glass-card hover:scale-105 text-primary font-semibold",
       },
       size: {
-        default: "h-12 px-6 py-3",
-        sm: "h-10 rounded-lg px-4 py-2",
-        lg: "h-16 rounded-xl px-10 py-4 text-lg",
-        icon: "h-12 w-12",
-        xl: "h-20 rounded-2xl px-12 py-6 text-xl",
+        default: "h-12 px-6 py-3 touch-target",
+        sm: "h-11 rounded-lg px-4 py-2 touch-target",
+        lg: "h-16 rounded-xl px-10 py-4 text-lg touch-target",
+        icon: "h-12 w-12 touch-target",
+        xl: "h-20 rounded-2xl px-12 py-6 text-xl touch-target",
       },
     },
     defaultVariants: {

@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { SkeletonMedia } from "@/components/ui/skeleton";
 
 interface MediaFile {
   id: string;
@@ -64,8 +65,10 @@ export const MediaDisplay = ({
 
   if (loading) {
     return (
-      <div className={`min-h-[200px] flex items-center justify-center ${className}`}>
-        <p className="text-muted-foreground">Загрузка...</p>
+      <div className={`${className} ${horizontal ? 'flex gap-4 overflow-hidden' : 'grid gap-4'}`}>
+        {[1, 2, 3].map((i) => (
+          <SkeletonMedia key={i} />
+        ))}
       </div>
     );
   }
@@ -110,11 +113,11 @@ export const MediaDisplay = ({
                             src={fileUrl}
                             alt={file.filename}
                             loading="lazy"
-                            onError={(e) => {
+                           onError={(e) => {
                               console.error('Image failed to load:', fileUrl);
                               e.currentTarget.style.display = 'none';
                             }}
-                            className="object-cover rounded-xl shadow-gentle hover:shadow-ocean transition-all duration-300 w-80 h-64 cursor-pointer hover:scale-105"
+                            className="object-cover rounded-xl shadow-gentle hover:shadow-ocean transition-all duration-300 w-80 h-64 cursor-pointer hover-lift"
                           />
                         </DialogTrigger>
                         <DialogContent className="max-w-4xl max-h-[90vh] p-2">

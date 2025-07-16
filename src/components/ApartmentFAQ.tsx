@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { MediaDisplay } from "@/components/MediaDisplay";
+import { WaveDivider } from "@/components/WaveDivider";
 const apartmentFAQData = [{
   question: "Возможно ли заселиться раньше 15:00?",
   answer: "Стандартное время заезда - 15:00.\nЕсли Вы прибыли раньше времени заселения, то мы постараемся помочь с хранением багажа, либо заселим Вас сразу при наличии возможности. Гарантированный ранний заезд оплачивается дополнительно в размере 50% от стоимости суток Вашей брони и дает право заселиться в любое удобное время с 7:00. Заселение ранее 7:00 оплачивается, как полные сутки."
@@ -46,73 +47,95 @@ const territoryFAQData = [{
   answer: "Информация будет добавлена позже."
 }];
 export const ApartmentFAQ = () => {
-  return <Card className="p-8 shadow-gentle">
-      
-      
-      <div className="space-y-8">
-        {/* Apartments FAQ */}
-        <div>
-          <h3 className="text-2xl font-bold font-playfair text-primary mb-6 uppercase">АПАРТАМЕНТЫ</h3>
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 rounded-full border-4 border-primary flex items-center justify-center flex-shrink-0">
-              <span className="text-lg font-bold text-primary">FAQ</span>
+  return (
+    <>
+      <Card className="p-8 shadow-premium hover-lift wave-divider">
+        <div className="space-y-8">
+          {/* Apartments FAQ */}
+          <div className="stagger-item">
+            <h3 className="mb-6 uppercase text-gradient">АПАРТАМЕНТЫ</h3>
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-16 h-16 rounded-full border-4 border-gold bg-gradient-to-r from-primary/10 to-gold/10 flex items-center justify-center flex-shrink-0">
+                <span className="text-lg font-bold text-gold">FAQ</span>
+              </div>
+              <div>
+                <p className="text-foreground text-lg font-medium leading-relaxed">Часто встречающиеся вопросы</p>
+              </div>
             </div>
-            <div>
-              <p className="text-foreground text-lg font-medium">Часто встречающиеся вопросы</p>
-            </div>
-          </div>
           
-          <Accordion type="single" collapsible className="w-full">
-            {apartmentFAQData.map((item, index) => <AccordionItem key={index} value={`apartment-${index}`}>
-                <AccordionTrigger className="text-left">{item.question}</AccordionTrigger>
-                <AccordionContent>
-                  <div className="whitespace-pre-line text-muted-foreground">
-                    {item.answer}
-                  </div>
-                  {item.question === "Куда выбросить мусор?" && <div className="mt-4">
-                      <MediaDisplay category="trash_location" />
-                    </div>}
-                </AccordionContent>
-              </AccordionItem>)}
-          </Accordion>
-        </div>
+            <Accordion type="single" collapsible className="w-full">
+              {apartmentFAQData.map((item, index) => (
+                <AccordionItem key={index} value={`apartment-${index}`} className="border-b border-primary/20">
+                  <AccordionTrigger className="text-left hover:text-gold transition-colors py-6 text-base font-medium">
+                    {item.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-6">
+                    <div className="whitespace-pre-line text-muted-foreground leading-relaxed">
+                      {item.answer}
+                    </div>
+                    {item.question === "Куда выбросить мусор?" && (
+                      <div className="mt-4">
+                        <MediaDisplay category="trash_location" />
+                      </div>
+                    )}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
 
-        {/* Territory FAQ */}
-        <div className="border-t border-border pt-8">
-          <h3 className="text-2xl font-bold font-playfair text-primary mb-6 mt-8 uppercase">ТЕРРИТОРИЯ</h3>
+          {/* Territory FAQ */}
+          <WaveDivider variant="subtle" className="my-8" />
+          <div className="stagger-item border-t border-gold/20 pt-8">
+            <h3 className="mb-6 mt-8 uppercase text-gradient">ТЕРРИТОРИЯ</h3>
+            
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-16 h-16 rounded-full border-4 border-gold bg-gradient-to-r from-primary/10 to-gold/10 flex items-center justify-center flex-shrink-0">
+                <span className="text-lg font-bold text-gold">FAQ</span>
+              </div>
+              <div>
+                <p className="text-foreground text-lg font-medium leading-relaxed">Часто встречающиеся вопросы</p>
+              </div>
+            </div>
           
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 rounded-full border-4 border-primary flex items-center justify-center flex-shrink-0">
-              <span className="text-lg font-bold text-primary">FAQ</span>
-            </div>
-            <div>
-              <p className="text-foreground text-lg font-medium">Часто встречающиеся вопросы</p>
-            </div>
+            <Accordion type="single" collapsible className="w-full">
+              {territoryFAQData.map((item, index) => (
+                <AccordionItem key={index} value={`territory-${index}`} className="border-b border-primary/20">
+                  <AccordionTrigger className="text-left hover:text-gold transition-colors py-6 text-base font-medium">
+                    {item.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-6">
+                    <div className="whitespace-pre-line text-muted-foreground leading-relaxed">
+                      {item.answer}
+                    </div>
+                    {item.question === "Как заказать экскурсию?" && (
+                      <div className="mt-4">
+                        <MediaDisplay category="excursion_info" />
+                      </div>
+                    )}
+                    {item.question === "Как заказать авто?" && (
+                      <div className="mt-4">
+                        <MediaDisplay category="car_rental" />
+                      </div>
+                    )}
+                    {item.question === "Описание территории?" && (
+                      <div className="mt-4">
+                        <MediaDisplay category="territory_description" />
+                      </div>
+                    )}
+                    {item.question === "Как дойти до пляжа?" && (
+                      <div className="mt-4">
+                        <MediaDisplay category="beach_directions" />
+                      </div>
+                    )}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </div>
-          
-          <Accordion type="single" collapsible className="w-full">
-            {territoryFAQData.map((item, index) => <AccordionItem key={index} value={`territory-${index}`}>
-                <AccordionTrigger className="text-left">{item.question}</AccordionTrigger>
-                <AccordionContent>
-                  <div className="whitespace-pre-line text-muted-foreground">
-                    {item.answer}
-                  </div>
-                  {item.question === "Как заказать экскурсию?" && <div className="mt-4">
-                      <MediaDisplay category="excursion_info" />
-                    </div>}
-                  {item.question === "Как заказать авто?" && <div className="mt-4">
-                      <MediaDisplay category="car_rental" />
-                    </div>}
-                  {item.question === "Описание территории?" && <div className="mt-4">
-                      <MediaDisplay category="territory_description" />
-                    </div>}
-                  {item.question === "Как дойти до пляжа?" && <div className="mt-4">
-                      <MediaDisplay category="beach_directions" />
-                    </div>}
-                </AccordionContent>
-              </AccordionItem>)}
-          </Accordion>
         </div>
-      </div>
-    </Card>;
+      </Card>
+      <WaveDivider variant="primary" />
+    </>
+  );
 };

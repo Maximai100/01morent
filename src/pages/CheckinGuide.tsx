@@ -22,14 +22,14 @@ const CheckinGuide = () => {
 
   return (
     <div className="min-h-screen bg-gradient-wave">
-      <div className="max-w-4xl mx-auto space-y-6 p-4">
-        <HeroSection apartmentNumber={guestData.apartmentNumber} />
-        <WelcomeSection />
-        <ApartmentInfo {...guestData} />
-        <ContactsSection />
-        <ApartmentFAQ />
-        <LoyaltySection />
-        <YandexMap />
+      <div className="max-w-4xl mx-auto space-y-8 p-4 md:p-6 lg:p-8">
+        <div className="stagger-item"><HeroSection apartmentNumber={guestData.apartmentNumber} /></div>
+        <div className="stagger-item"><WelcomeSection /></div>
+        <div className="stagger-item"><ApartmentInfo {...guestData} /></div>
+        <div className="stagger-item"><ContactsSection /></div>
+        <div className="stagger-item"><ApartmentFAQ /></div>
+        <div className="stagger-item"><LoyaltySection /></div>
+        <div className="stagger-item"><YandexMap /></div>
       </div>
     </div>
   );

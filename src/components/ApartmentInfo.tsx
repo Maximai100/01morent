@@ -1,6 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, Key, Wifi } from "lucide-react";
+import { MapPin, Calendar, Key, Wifi, Copy, Check } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 interface ApartmentInfoProps {
   apartmentNumber?: string;
@@ -19,90 +21,129 @@ export const ApartmentInfo = ({
   electronicLockCode = "1111",
   wifiPassword = "логин/пароль"
 }: ApartmentInfoProps) => {
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  const copyToClipboard = async (text: string, fieldName: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedField(fieldName);
+      toast({
+        title: "Скопировано!",
+        description: `${fieldName} скопирован в буфер обмена`,
+        duration: 2000,
+      });
+      setTimeout(() => setCopiedField(null), 2000);
+    } catch (err) {
+      toast({
+        title: "Ошибка",
+        description: "Не удалось скопировать в буфер обмена",
+        variant: "destructive",
+      });
+    }
+  };
   return (
-    <Card className="p-8 shadow-gentle space-y-6">
+    <Card className="p-8 shadow-premium hover-lift space-y-6 wave-divider">
       {/* Apartment Details */}
-      <Card className="p-6 bg-muted border-2 border-primary/20">
+      <Card className="stagger-item p-6 bg-muted border-2 border-primary/20 hover-glow">
         <div className="flex items-start gap-3 mb-4">
-          <MapPin className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+          <MapPin className="w-7 h-7 text-gold flex-shrink-0 mt-1" />
           <div>
-            <h3 className="font-semibold text-lg text-primary mb-2">
+            <h3 className="text-lg text-primary mb-2">
               Ваши апартаменты
             </h3>
-            <p className="text-foreground">г. Сочи, пгт Сириус</p>
-            <p className="text-foreground">ул. Нагорный тупик 13Б</p>
+            <p className="text-foreground leading-relaxed">г. Сочи, пгт Сириус</p>
+            <p className="text-foreground leading-relaxed">ул. Нагорный тупик 13Б</p>
           </div>
         </div>
         
-        <div className="bg-primary/10 rounded-lg p-4 border-2 border-primary/30">
-          <p className="text-center font-bold text-primary text-lg">
+        <div className="bg-gradient-to-r from-gold/20 to-primary/20 rounded-xl p-6 border-2 border-gold/30 text-center">
+          <p className="font-bold text-primary-dark text-lg mb-2">
             2-й подъезд 10 этаж
           </p>
-          <p className="text-center font-bold text-primary text-xl">
+          <p className="font-bold text-gold text-2xl">
             Апартаменты {apartmentNumber}
           </p>
         </div>
       </Card>
 
       {/* Check-in Dates */}
-      <Card className="p-6 bg-muted border-primary/20">
+      <Card className="stagger-item p-6 bg-muted border-primary/20 hover-glow">
         <div className="flex items-center gap-3 mb-4">
-          <Calendar className="w-6 h-6 text-primary" />
-          <h3 className="font-semibold text-lg text-primary">
+          <Calendar className="w-7 h-7 text-gold" />
+          <h3 className="text-lg text-primary">
             Даты бронирования
           </h3>
         </div>
-        <div className="space-y-2">
-          <p className="text-foreground">
-            <span className="font-medium">Заезд:</span> {checkIn}
+        <div className="space-y-3">
+          <p className="text-foreground leading-relaxed">
+            <span className="font-semibold text-primary-dark">Заезд:</span> {checkIn}
           </p>
-          <p className="text-foreground">
-            <span className="font-medium">Выезд:</span> {checkOut}
+          <p className="text-foreground leading-relaxed">
+            <span className="font-semibold text-primary-dark">Выезд:</span> {checkOut}
           </p>
         </div>
       </Card>
 
       {/* Access Codes */}
-      <Card className="p-6 bg-muted border-primary/20">
-        <div className="flex items-center gap-3 mb-4">
-          <Key className="w-6 h-6 text-primary" />
-          <h3 className="font-semibold text-lg text-primary">
+      <Card className="stagger-item p-6 bg-muted border-primary/20 hover-glow">
+        <div className="flex items-center gap-3 mb-6">
+          <Key className="w-7 h-7 text-gold" />
+          <h3 className="text-lg text-primary">
             Важные коды доступа:
           </h3>
         </div>
         
-        <div className="space-y-3">
+        <div className="space-y-4">
           <Button 
             variant="outline" 
-            className="w-full justify-start text-left h-auto p-4 bg-white border-2 border-primary/30"
+            onClick={() => copyToClipboard(entranceCode, "Код от подъезда")}
+            className={`group w-full justify-between text-left h-auto p-6 bg-white/80 border-2 border-primary/30 hover:border-gold/50 hover:bg-gradient-to-r hover:from-gold/5 hover:to-primary/5 transition-all duration-300 ${copiedField === "Код от подъезда" ? "pulse-code" : ""}`}
           >
             <div>
-              <p className="font-medium">Код от подъезда</p>
-              <p className="text-xl font-bold text-primary">{entranceCode}</p>
+              <p className="font-medium text-muted-foreground">Код от подъезда</p>
+              <p className="text-2xl font-bold text-primary">{entranceCode}</p>
             </div>
+            {copiedField === "Код от подъезда" ? (
+              <Check className="w-6 h-6 text-emerald-500" />
+            ) : (
+              <Copy className="w-6 h-6 text-muted-foreground group-hover:text-gold transition-colors" />
+            )}
           </Button>
           
           <Button 
             variant="outline" 
-            className="w-full justify-start text-left h-auto p-4 bg-white border-2 border-primary/30"
+            onClick={() => copyToClipboard(electronicLockCode, "Код от электронного замка")}
+            className={`group w-full justify-between text-left h-auto p-6 bg-white/80 border-2 border-primary/30 hover:border-gold/50 hover:bg-gradient-to-r hover:from-gold/5 hover:to-primary/5 transition-all duration-300 ${copiedField === "Код от электронного замка" ? "pulse-code" : ""}`}
           >
             <div>
-              <p className="font-medium">Код от электронного замка</p>
-              <p className="text-xl font-bold text-primary">{electronicLockCode}</p>
+              <p className="font-medium text-muted-foreground">Код от электронного замка</p>
+              <p className="text-2xl font-bold text-primary">{electronicLockCode}</p>
             </div>
+            {copiedField === "Код от электронного замка" ? (
+              <Check className="w-6 h-6 text-emerald-500" />
+            ) : (
+              <Copy className="w-6 h-6 text-muted-foreground group-hover:text-gold transition-colors" />
+            )}
           </Button>
           
           <Button 
             variant="outline" 
-            className="w-full justify-start text-left h-auto p-4 bg-white border-2 border-primary/30"
+            onClick={() => copyToClipboard(wifiPassword, "Wi-Fi пароль")}
+            className={`group w-full justify-between text-left h-auto p-6 bg-white/80 border-2 border-primary/30 hover:border-gold/50 hover:bg-gradient-to-r hover:from-gold/5 hover:to-primary/5 transition-all duration-300 ${copiedField === "Wi-Fi пароль" ? "pulse-code" : ""}`}
           >
-            <div className="flex items-center gap-2">
-              <Wifi className="w-5 h-5" />
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+              <Wifi className="w-6 h-6 text-gold flex-shrink-0" />
               <div className="min-w-0 flex-1">
-                <p className="font-medium">Wi-Fi</p>
-                <p className="text-sm font-semibold text-primary break-all">{wifiPassword}</p>
+                <p className="font-medium text-muted-foreground">Wi-Fi</p>
+                <p className="text-lg font-semibold text-primary break-all">{wifiPassword}</p>
               </div>
             </div>
+            {copiedField === "Wi-Fi пароль" ? (
+              <Check className="w-6 h-6 text-emerald-500 flex-shrink-0" />
+            ) : (
+              <Copy className="w-6 h-6 text-muted-foreground group-hover:text-gold transition-colors flex-shrink-0" />
+            )}
           </Button>
         </div>
       </Card>
