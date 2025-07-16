@@ -1,9 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Phone, MessageCircle, Instagram } from "lucide-react";
-
 export const ContactsSection = () => {
-  return (
-    <Card className="p-8 shadow-gentle space-y-6">
+  return <Card className="p-8 shadow-gentle space-y-6">
       {/* Contacts */}
       <Card className="p-6 bg-primary/5 border-primary/20">
         <h3 className="font-bold text-lg text-primary mb-4">
@@ -25,9 +23,9 @@ export const ContactsSection = () => {
 
       {/* FAQ Settlement */}
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-primary mb-6">ЗАСЕЛЕНИЕ</h3>
+        <h3 className="text-2xl font-bold text-primary mb-6 my-0 mx-0 px-[9px]">ЗАСЕЛЕНИЕ</h3>
         
-        <div className="flex items-center justify-center mb-6">
+        <div className="flex items-center justify-center mb-6 rounded-md">
           <div className="w-20 h-20 rounded-full border-4 border-primary flex items-center justify-center">
             <span className="text-2xl font-bold text-primary">FAQ</span>
           </div>
@@ -51,6 +49,5 @@ export const ContactsSection = () => {
           </Card>
         </div>
       </div>
-    </Card>
-  );
+    </Card>;
 };
