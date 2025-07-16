@@ -72,15 +72,23 @@ export const MediaDisplay = ({
       `grid gap-4 ${className}`
     }>
       {mediaFiles.map((file) => {
-        const fileUrl = `https://ugsbqgajuvcdlxsyivvo.supabase.co/storage/v1/object/public/media/${file.file_path}`;
+        // file_path уже содержит полный URL, не нужно добавлять базовый URL
+        const fileUrl = file.file_path;
         
-        if (file.file_type.startsWith('image/')) {
+        console.log('MediaDisplay file:', file.filename, 'type:', file.file_type, 'url:', fileUrl);
+        
+        if (file.file_type === 'image') {
           return (
             <div key={file.id} className={`relative group ${horizontal ? 'flex-shrink-0 w-80' : ''}`}>
               <img 
                 src={fileUrl}
                 alt={file.description || file.filename}
                 loading="lazy"
+                onError={(e) => {
+                  console.error('Image failed to load:', fileUrl);
+                  e.currentTarget.style.display = 'none';
+                }}
+                onLoad={() => console.log('Image loaded successfully:', fileUrl)}
                 className={`object-cover rounded-xl shadow-gentle hover:shadow-ocean transition-all duration-300 ${
                   horizontal ? 'w-80 h-64' : 'w-full h-64'
                 }`}
@@ -94,7 +102,7 @@ export const MediaDisplay = ({
           );
         }
         
-        if (file.file_type.startsWith('video/')) {
+        if (file.file_type === 'video') {
           return (
             <div key={file.id} className={`relative group ${horizontal ? 'flex-shrink-0 w-80' : ''}`}>
               <video 
