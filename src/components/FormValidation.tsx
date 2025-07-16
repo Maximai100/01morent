@@ -91,45 +91,28 @@ export const useFormValidation = (rules: ValidationRules) => {
 
 export const validationRules = {
   guestName: {
-    required: true,
+    required: false,
     minLength: 2,
-    maxLength: 100,
-    pattern: /^[a-zA-Zа-яА-ЯёЁ\s]+$/
+    maxLength: 100
   },
   apartmentNumber: {
-    required: true,
-    pattern: /^\d+$/
+    required: false
   },
   checkIn: {
-    required: true,
-    custom: (value: string) => {
-      const datePattern = /^\d{2}\.\d{2}\.\d{4}\s+в\s+\d{2}:\d{2}$/;
-      if (!datePattern.test(value)) {
-        return "Формат: ДД.ММ.ГГГГ в ЧЧ:ММ";
-      }
-      return null;
-    }
+    required: false
   },
   checkOut: {
-    required: true,
-    custom: (value: string) => {
-      const datePattern = /^\d{2}\.\d{2}\.\d{4}\s+в\s+\d{2}:\d{2}$/;
-      if (!datePattern.test(value)) {
-        return "Формат: ДД.ММ.ГГГГ в ЧЧ:ММ";
-      }
-      return null;
-    }
+    required: false
   },
   entranceCode: {
-    required: true,
+    required: false,
     minLength: 1
   },
   electronicLockCode: {
-    required: true,
-    pattern: /^\d+$/
+    required: false
   },
   wifiPassword: {
-    required: true,
+    required: false,
     minLength: 3
   }
 } as ValidationRules;

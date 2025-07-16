@@ -20,7 +20,7 @@ export const YandexMap = () => {
         }}
       >
         <iframe
-          src="https://yandex.ru/map-widget/v1/?um=constructor%3A6bb5a4bdfd62d0b9b4cb5c6ca6b0fb4c93b9b8e3dae4e2ebb5dd1e03e7ef7c8a&amp;source=constructor&amp;ll=39.72722%2C43.600938&amp;z=16&amp;pt=39.72722%2C43.600938%2Cpm2rdm"
+          src="https://yandex.ru/map-widget/v1/?um=constructor%3A6bb5a4bdfd62d0b9b4cb5c6ca6b0fb4c93b9b8e3dae4e2ebb5dd1e03e7ef7c8a&amp;source=constructor&amp;ll=39.931606%2C43.416658&amp;z=16&amp;pt=39.931606%2C43.416658%2Cpm2rdm"
           width="100%"
           height="400"
           frameBorder="0"

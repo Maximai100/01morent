@@ -39,15 +39,6 @@ const ManagerPanel = () => {
   };
 
   const handleCopyLink = () => {
-    if (!validateForm(formData)) {
-      toast({
-        title: "Ошибка валидации",
-        description: "Пожалуйста, исправьте ошибки в форме",
-        variant: "destructive"
-      });
-      return;
-    }
-
     const link = generateGuestLink();
     navigator.clipboard.writeText(link);
     toast({
@@ -57,17 +48,8 @@ const ManagerPanel = () => {
   };
 
   const handleShareLink = () => {
-    if (!validateForm(formData)) {
-      toast({
-        title: "Ошибка валидации", 
-        description: "Пожалуйста, исправьте ошибки в форме",
-        variant: "destructive"
-      });
-      return;
-    }
-
     const link = generateGuestLink();
-    const message = `Здравствуйте, ${formData.guestName}!\n\nВаша инструкция по заселению в MORENT:\n${link}`;
+    const message = `Здравствуйте, ${formData.guestName}!\n\nДобро пожаловать в MORENT 🌴\n\nВаша персональная инструкция по заселению:\n${link}`;
     
     navigator.clipboard.writeText(message);
     toast({
@@ -262,8 +244,7 @@ const ManagerPanel = () => {
                   <div className="space-y-3">
                     <Button 
                       onClick={handleCopyLink}
-                      disabled={hasErrors}
-                      className="w-full bg-gradient-ocean shadow-ocean disabled:opacity-50"
+                      className="w-full bg-gradient-ocean shadow-ocean"
                     >
                       <Copy className="w-4 h-4 mr-2" />
                       Скопировать ссылку
@@ -271,9 +252,8 @@ const ManagerPanel = () => {
 
                     <Button 
                       onClick={handleShareLink}
-                      disabled={hasErrors}
                       variant="outline"
-                      className="w-full border-2 border-accent text-accent hover:bg-accent hover:text-white disabled:opacity-50"
+                      className="w-full border-2 border-accent text-accent hover:bg-accent hover:text-white"
                     >
                       <Share className="w-4 h-4 mr-2" />
                       Подготовить сообщение для гостя
@@ -284,7 +264,8 @@ const ManagerPanel = () => {
                     <h3 className="font-medium text-accent mb-2">Готовое сообщение:</h3>
                     <p className="text-sm text-foreground">
                       Здравствуйте, {formData.guestName || '[Имя гостя]'}!<br/>
-                      Ваша инструкция по заселению в MORENT:<br/>
+                      Добро пожаловать в MORENT 🌴<br/><br/>
+                      Ваша персональная инструкция по заселению:<br/>
                       [Ссылка будет вставлена автоматически]
                     </p>
                   </Card>
