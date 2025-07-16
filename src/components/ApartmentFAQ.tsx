@@ -52,7 +52,7 @@ export const ApartmentFAQ = () => {
       <div className="space-y-8">
         {/* Apartments FAQ */}
         <div>
-          <h3 className="text-2xl font-semibold font-playfair text-primary mb-4 uppercase">АПАРТАМЕНТЫ</h3>
+          <h3 className="text-2xl font-bold font-playfair text-primary mb-6 uppercase">АПАРТАМЕНТЫ</h3>
           <div className="flex items-center gap-4 mb-6">
             <div className="w-16 h-16 rounded-full border-4 border-primary flex items-center justify-center flex-shrink-0">
               <span className="text-lg font-bold text-primary">FAQ</span>
@@ -79,7 +79,7 @@ export const ApartmentFAQ = () => {
 
         {/* Territory FAQ */}
         <div className="border-t border-border pt-8">
-          <h3 className="text-2xl font-semibold font-playfair text-primary mb-4 mt-8 uppercase">ТЕРРИТОРИЯ</h3>
+          <h3 className="text-2xl font-bold font-playfair text-primary mb-6 mt-8 uppercase">ТЕРРИТОРИЯ</h3>
           
           <div className="flex items-center gap-4 mb-6">
             <div className="w-16 h-16 rounded-full border-4 border-primary flex items-center justify-center flex-shrink-0">

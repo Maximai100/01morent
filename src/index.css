@@ -22,11 +22,11 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222 84% 5%;
 
-    /* Sea Wave Blue - #006CFF */
-    --primary: 214 100% 50%;
+    /* MORENT Deep Blue from logo */
+    --primary: 211 85% 24%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 214 80% 60%;
-    --primary-glow: 214 70% 70%;
+    --primary-light: 211 70% 35%;
+    --primary-glow: 211 60% 50%;
 
     /* Sandy Neutral */
     --secondary: 42 20% 90%;

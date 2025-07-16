@@ -5,6 +5,7 @@ import { ApartmentInfo } from "@/components/ApartmentInfo";
 import { ContactsSection } from "@/components/ContactsSection";
 import { ApartmentFAQ } from "@/components/ApartmentFAQ";
 import { LoyaltySection } from "@/components/LoyaltySection";
+import { YandexMap } from "@/components/YandexMap";
 
 const CheckinGuide = () => {
   const [searchParams] = useSearchParams();
@@ -28,6 +29,7 @@ const CheckinGuide = () => {
         <ContactsSection />
         <ApartmentFAQ />
         <LoyaltySection />
+        <YandexMap />
       </div>
     </div>
   );

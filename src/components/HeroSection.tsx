@@ -16,7 +16,10 @@ export const HeroSection = ({
             <h1 className="text-6xl md:text-8xl font-bold font-playfair text-white tracking-wider mb-4 uppercase">
               MORENT
             </h1>
-            <div className="w-32 h-1 bg-white rounded-full mx-auto" />
+            {/* Wave line like in logo */}
+            <svg className="w-48 h-3 mx-auto" viewBox="0 0 200 12" fill="none">
+              <path d="M0 6C50 2, 150 10, 200 6" stroke="white" strokeWidth="2" fill="none"/>
+            </svg>
           </div>
           
           <p className="text-xl md:text-2xl text-white/90 font-medium mb-8">
