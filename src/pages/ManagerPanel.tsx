@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MediaUpload } from "@/components/MediaUpload";
 import { useFormValidation, validationRules } from "@/components/FormValidation";
-import { Copy, Share, Settings, Upload, AlertCircle } from "lucide-react";
+import { Copy, Share, Settings, Upload, AlertCircle, ArrowLeft } from "lucide-react";
 
 const ManagerPanel = () => {
   const { toast } = useToast();
@@ -85,9 +85,19 @@ const ManagerPanel = () => {
     <div className="min-h-screen bg-gradient-wave p-4">
       <div className="max-w-6xl mx-auto">
         <Card className="p-8 shadow-ocean">
-          <div className="flex items-center gap-3 mb-8">
-            <Settings className="w-8 h-8 text-primary" />
-            <h1 className="text-3xl font-bold font-playfair text-primary uppercase">Панель менеджера MORENT</h1>
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <Settings className="w-8 h-8 text-primary" />
+              <h1 className="text-3xl font-bold font-playfair text-primary uppercase">Панель менеджера MORENT</h1>
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={() => window.location.href = '/'}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              На главную
+            </Button>
           </div>
 
           <Tabs defaultValue="guest-data" className="w-full">
@@ -287,6 +297,10 @@ const ManagerPanel = () => {
                 <MediaUpload 
                   category="welcome_photos" 
                   title="Фотографии для секции приветствия" 
+                />
+                <MediaUpload 
+                  category="checkin_videos" 
+                  title="Видео для раздела заселение" 
                 />
                 <MediaUpload 
                   category="trash_location" 

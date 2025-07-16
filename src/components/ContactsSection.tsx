@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Phone, MessageCircle, Instagram, Send } from "lucide-react";
+import { MediaDisplay } from "@/components/MediaDisplay";
 export const ContactsSection = () => {
   return <Card className="p-8 shadow-gentle space-y-6">
       {/* Contacts */}
@@ -38,7 +39,7 @@ export const ContactsSection = () => {
             </a>
             
             <a 
-              href="https://wa.me/88007005501" 
+              href="https://wa.me/79628886449" 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors"
@@ -66,13 +67,23 @@ export const ContactsSection = () => {
         <div className="space-y-4">
           <Card className="p-4 bg-muted border-primary/20">
             <p className="text-sm text-foreground">
-              <span className="font-medium">1.</span> Видео подъезда (загружается из админ панели)
+              <span className="font-medium">1.</span> Видео подъезда
             </p>
+            <MediaDisplay 
+              category="checkin_videos" 
+              fallbackText="Видео подъезда (загружается из админ панели)"
+              className="mt-3"
+            />
           </Card>
           <Card className="p-4 bg-muted border-primary/20">
             <p className="text-sm text-foreground">
-              <span className="font-medium">2.</span> Видео электронного замка (загружается из админ панели)
+              <span className="font-medium">2.</span> Видео электронного замка
             </p>
+            <MediaDisplay 
+              category="checkin_videos" 
+              fallbackText="Видео электронного замка (загружается из админ панели)"
+              className="mt-3"
+            />
           </Card>
         </div>
       </div>

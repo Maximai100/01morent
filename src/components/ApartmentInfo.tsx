@@ -98,9 +98,9 @@ export const ApartmentInfo = ({
           >
             <div className="flex items-center gap-2">
               <Wifi className="w-5 h-5" />
-              <div>
+              <div className="min-w-0 flex-1">
                 <p className="font-medium">Wi-Fi</p>
-                <p className="text-lg font-semibold text-primary">{wifiPassword}</p>
+                <p className="text-sm font-semibold text-primary break-all">{wifiPassword}</p>
               </div>
             </div>
           </Button>
