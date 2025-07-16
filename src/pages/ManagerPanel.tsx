@@ -7,7 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MediaUpload } from "@/components/MediaUpload";
-import { Copy, Share, Settings, Upload } from "lucide-react";
+import { useFormValidation, validationRules } from "@/components/FormValidation";
+import { Copy, Share, Settings, Upload, AlertCircle } from "lucide-react";
 
 const ManagerPanel = () => {
   const { toast } = useToast();
@@ -20,6 +21,8 @@ const ManagerPanel = () => {
     wifiPassword: '',
     guestName: ''
   });
+
+  const { errors, validateForm, validateAndClearError, hasErrors } = useFormValidation(validationRules);
 
   const generateGuestLink = () => {
     const baseUrl = window.location.origin;
@@ -36,6 +39,15 @@ const ManagerPanel = () => {
   };
 
   const handleCopyLink = () => {
+    if (!validateForm(formData)) {
+      toast({
+        title: "Ошибка валидации",
+        description: "Пожалуйста, исправьте ошибки в форме",
+        variant: "destructive"
+      });
+      return;
+    }
+
     const link = generateGuestLink();
     navigator.clipboard.writeText(link);
     toast({
@@ -45,6 +57,15 @@ const ManagerPanel = () => {
   };
 
   const handleShareLink = () => {
+    if (!validateForm(formData)) {
+      toast({
+        title: "Ошибка валидации", 
+        description: "Пожалуйста, исправьте ошибки в форме",
+        variant: "destructive"
+      });
+      return;
+    }
+
     const link = generateGuestLink();
     const message = `Здравствуйте, ${formData.guestName}!\n\nВаша инструкция по заселению в MORENT:\n${link}`;
     
@@ -57,6 +78,7 @@ const ManagerPanel = () => {
 
   const updateFormData = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    validateAndClearError(field, value);
   };
 
   return (
@@ -65,7 +87,7 @@ const ManagerPanel = () => {
         <Card className="p-8 shadow-ocean">
           <div className="flex items-center gap-3 mb-8">
             <Settings className="w-8 h-8 text-primary" />
-            <h1 className="text-3xl font-bold text-primary">Панель менеджера MORENT</h1>
+            <h1 className="text-3xl font-bold font-playfair text-primary uppercase">Панель менеджера MORENT</h1>
           </div>
 
           <Tabs defaultValue="guest-data" className="w-full">
@@ -84,7 +106,7 @@ const ManagerPanel = () => {
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Form Section */}
                 <div className="space-y-6">
-                  <h2 className="text-xl font-semibold text-primary border-b border-border pb-2">
+                  <h2 className="text-xl font-semibold font-playfair text-primary border-b border-border pb-2 uppercase">
                     Данные для гостя
                   </h2>
 
@@ -96,7 +118,14 @@ const ManagerPanel = () => {
                         value={formData.guestName}
                         onChange={(e) => updateFormData('guestName', e.target.value)}
                         placeholder="Иван Иванов"
+                        className={errors.guestName ? "border-destructive" : ""}
                       />
+                      {errors.guestName && (
+                        <div className="flex items-center gap-1 text-destructive text-sm mt-1">
+                          <AlertCircle className="w-4 h-4" />
+                          {errors.guestName}
+                        </div>
+                      )}
                     </div>
 
                     <div>
@@ -106,7 +135,14 @@ const ManagerPanel = () => {
                         value={formData.apartmentNumber}
                         onChange={(e) => updateFormData('apartmentNumber', e.target.value)}
                         placeholder="169"
+                        className={errors.apartmentNumber ? "border-destructive" : ""}
                       />
+                      {errors.apartmentNumber && (
+                        <div className="flex items-center gap-1 text-destructive text-sm mt-1">
+                          <AlertCircle className="w-4 h-4" />
+                          {errors.apartmentNumber}
+                        </div>
+                      )}
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
@@ -117,7 +153,14 @@ const ManagerPanel = () => {
                           value={formData.checkIn}
                           onChange={(e) => updateFormData('checkIn', e.target.value)}
                           placeholder="08.06.2025 в 15:00"
+                          className={errors.checkIn ? "border-destructive" : ""}
                         />
+                        {errors.checkIn && (
+                          <div className="flex items-center gap-1 text-destructive text-sm mt-1">
+                            <AlertCircle className="w-4 h-4" />
+                            {errors.checkIn}
+                          </div>
+                        )}
                       </div>
                       <div>
                         <Label htmlFor="checkout">Дата выезда</Label>
@@ -126,7 +169,14 @@ const ManagerPanel = () => {
                           value={formData.checkOut}
                           onChange={(e) => updateFormData('checkOut', e.target.value)}
                           placeholder="09.06.2025 в 12:00"
+                          className={errors.checkOut ? "border-destructive" : ""}
                         />
+                        {errors.checkOut && (
+                          <div className="flex items-center gap-1 text-destructive text-sm mt-1">
+                            <AlertCircle className="w-4 h-4" />
+                            {errors.checkOut}
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -138,7 +188,14 @@ const ManagerPanel = () => {
                           value={formData.entranceCode}
                           onChange={(e) => updateFormData('entranceCode', e.target.value)}
                           placeholder="#2020"
+                          className={errors.entranceCode ? "border-destructive" : ""}
                         />
+                        {errors.entranceCode && (
+                          <div className="flex items-center gap-1 text-destructive text-sm mt-1">
+                            <AlertCircle className="w-4 h-4" />
+                            {errors.entranceCode}
+                          </div>
+                        )}
                       </div>
                       <div>
                         <Label htmlFor="lock">Код электронного замка</Label>
@@ -147,7 +204,14 @@ const ManagerPanel = () => {
                           value={formData.electronicLockCode}
                           onChange={(e) => updateFormData('electronicLockCode', e.target.value)}
                           placeholder="1111"
+                          className={errors.electronicLockCode ? "border-destructive" : ""}
                         />
+                        {errors.electronicLockCode && (
+                          <div className="flex items-center gap-1 text-destructive text-sm mt-1">
+                            <AlertCircle className="w-4 h-4" />
+                            {errors.electronicLockCode}
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -158,14 +222,21 @@ const ManagerPanel = () => {
                         value={formData.wifiPassword}
                         onChange={(e) => updateFormData('wifiPassword', e.target.value)}
                         placeholder="логин/пароль"
+                        className={errors.wifiPassword ? "border-destructive" : ""}
                       />
+                      {errors.wifiPassword && (
+                        <div className="flex items-center gap-1 text-destructive text-sm mt-1">
+                          <AlertCircle className="w-4 h-4" />
+                          {errors.wifiPassword}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
 
                 {/* Preview and Actions */}
                 <div className="space-y-6">
-                  <h2 className="text-xl font-semibold text-primary border-b border-border pb-2">
+                  <h2 className="text-xl font-semibold font-playfair text-primary border-b border-border pb-2 uppercase">
                     Ссылка для отправки
                   </h2>
 
@@ -181,7 +252,8 @@ const ManagerPanel = () => {
                   <div className="space-y-3">
                     <Button 
                       onClick={handleCopyLink}
-                      className="w-full bg-gradient-ocean shadow-ocean"
+                      disabled={hasErrors}
+                      className="w-full bg-gradient-ocean shadow-ocean disabled:opacity-50"
                     >
                       <Copy className="w-4 h-4 mr-2" />
                       Скопировать ссылку
@@ -189,8 +261,9 @@ const ManagerPanel = () => {
 
                     <Button 
                       onClick={handleShareLink}
+                      disabled={hasErrors}
                       variant="outline"
-                      className="w-full border-2 border-accent text-accent hover:bg-accent hover:text-white"
+                      className="w-full border-2 border-accent text-accent hover:bg-accent hover:text-white disabled:opacity-50"
                     >
                       <Share className="w-4 h-4 mr-2" />
                       Подготовить сообщение для гостя
@@ -211,6 +284,10 @@ const ManagerPanel = () => {
 
             <TabsContent value="media-upload" className="space-y-6 mt-6">
               <div className="grid md:grid-cols-2 gap-6">
+                <MediaUpload 
+                  category="welcome_photos" 
+                  title="Фотографии для секции приветствия" 
+                />
                 <MediaUpload 
                   category="trash_location" 
                   title="Видео расположения мусорных баков" 

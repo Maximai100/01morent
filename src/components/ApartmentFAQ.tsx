@@ -67,11 +67,14 @@ const territoryFAQData = [
 export const ApartmentFAQ = () => {
   return (
     <Card className="p-8 shadow-gentle">
-      <h3 className="text-2xl font-bold text-primary mb-8 text-center">АПАРТАМЕНТЫ</h3>
+      <h2 className="text-3xl font-bold font-playfair text-primary mb-6 text-center border-b border-border pb-4 uppercase">
+        FAQ
+      </h2>
       
       <div className="space-y-8">
         {/* Apartments FAQ */}
         <div>
+          <h3 className="text-2xl font-semibold font-playfair text-primary mb-4 uppercase">АПАРТАМЕНТЫ</h3>
           <div className="flex items-center gap-4 mb-6">
             <div className="w-16 h-16 rounded-full border-4 border-primary flex items-center justify-center flex-shrink-0">
               <span className="text-lg font-bold text-primary">FAQ</span>
@@ -102,7 +105,7 @@ export const ApartmentFAQ = () => {
 
         {/* Territory FAQ */}
         <div className="border-t border-border pt-8">
-          <h4 className="text-xl font-bold text-primary mb-6 text-center">Территория</h4>
+          <h3 className="text-2xl font-semibold font-playfair text-primary mb-4 mt-8 uppercase">ТЕРРИТОРИЯ</h3>
           
           <div className="flex items-center gap-4 mb-6">
             <div className="w-16 h-16 rounded-full border-4 border-primary flex items-center justify-center flex-shrink-0">

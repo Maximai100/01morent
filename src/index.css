@@ -1,49 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+/* Premium Seaside Design System - MORENT
+Colors: #006CFF (sea wave) + #FDBB3B (sun) + #F7F4EF (sandy)
+Typography: Manrope/Inter for body, Playfair Display for accents
 All colors MUST be HSL.
 */
 
 @layer base {
   :root {
-    /* MORENT Brand Theme - Deep Navy Blue */
-    --background: 0 0% 100%;
-    --foreground: 210 50% 15%;
+    /* Brand Foundation - Premium Seaside */
+    --background: 42 33% 97%; /* #F7F4EF Sandy */
+    --foreground: 222 84% 5%;
 
     --card: 0 0% 100%;
-    --card-foreground: 210 50% 15%;
+    --card-foreground: 222 84% 5%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 50% 15%;
+    --popover-foreground: 222 84% 5%;
 
-    /* MORENT Deep Navy Blue */
-    --primary: 210 60% 15%;
+    /* Sea Wave Blue - #006CFF */
+    --primary: 214 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 210 50% 25%;
-    --primary-glow: 210 55% 35%;
+    --primary-light: 214 80% 60%;
+    --primary-glow: 214 70% 70%;
 
-    /* Warm Beach Sand */
-    --secondary: 35 25% 85%;
-    --secondary-foreground: 210 22% 22%;
+    /* Sandy Neutral */
+    --secondary: 42 20% 90%;
+    --secondary-foreground: 222 20% 20%;
 
-    /* Light Ocean Foam */
-    --muted: 200 20% 94%;
+    /* Light Muted */
+    --muted: 42 15% 92%;
     --muted-foreground: 210 15% 50%;
 
-    /* Coral Accent */
-    --accent: 15 75% 70%;
-    --accent-foreground: 0 0% 100%;
+    /* Sun Accent - #FDBB3B */
+    --accent: 42 93% 60%;
+    --accent-foreground: 222 84% 5%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 200 15% 88%;
-    --input: 200 15% 88%;
-    --ring: 210 55% 25%;
+    --border: 214 31% 91%;
+    --input: 214 31% 91%;
+    --ring: 214 100% 50%;
 
-    --radius: 1rem;
+    --radius: 1.5rem;
 
     /* Gradients */
     --gradient-ocean: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));

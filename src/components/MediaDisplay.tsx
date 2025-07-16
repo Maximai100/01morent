@@ -12,9 +12,10 @@ interface MediaFile {
 interface MediaDisplayProps {
   category: string;
   className?: string;
+  fallbackText?: string;
 }
 
-export const MediaDisplay = ({ category, className }: MediaDisplayProps) => {
+export const MediaDisplay = ({ category, className, fallbackText = "Медиафайлы не загружены" }: MediaDisplayProps) => {
   const [files, setFiles] = useState<MediaFile[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -45,7 +46,13 @@ export const MediaDisplay = ({ category, className }: MediaDisplayProps) => {
   }
 
   if (files.length === 0) {
-    return <div className="text-muted-foreground">Медиафайлы не загружены</div>;
+    return (
+      <div className={`bg-muted rounded-lg p-8 text-center min-h-[200px] flex flex-col items-center justify-center ${className || ''}`}>
+        <div className="text-muted-foreground text-lg">
+          {fallbackText}
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -56,6 +63,7 @@ export const MediaDisplay = ({ category, className }: MediaDisplayProps) => {
             <img
               src={file.file_path}
               alt={file.description}
+              loading="lazy"
               className="w-full max-w-md h-auto rounded-lg shadow-ocean"
             />
           )}

@@ -12,13 +12,14 @@ export const HeroSection = ({ apartmentNumber = "169" }: HeroSectionProps) => {
         <img 
           src={heroImage} 
           alt="MORENT - Ваш дом у моря"
+          loading="lazy"
           className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-80"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/20 to-primary/60" />
         
         <div className="relative h-full flex flex-col items-center justify-center text-center px-6">
           <div className="mb-8">
-            <h1 className="text-6xl md:text-8xl font-bold text-white tracking-wider mb-4">
+            <h1 className="text-6xl md:text-8xl font-bold font-playfair text-white tracking-wider mb-4 uppercase">
               MORENT
             </h1>
             <div className="w-32 h-1 bg-white rounded-full mx-auto" />

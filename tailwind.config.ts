@@ -18,6 +18,11 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'manrope': ['Manrope', 'sans-serif'],
+				'inter': ['Inter', 'sans-serif'],
+				'playfair': ['Playfair Display', 'serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -66,9 +71,11 @@ export default {
 				}
 			},
 			borderRadius: {
+				card: '1.5rem',
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				sm: 'calc(var(--radius) - 4px)',
+				full: '9999px'
 			},
 			backgroundImage: {
 				'gradient-ocean': 'var(--gradient-ocean)',
