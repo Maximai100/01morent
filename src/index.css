@@ -54,10 +54,18 @@ All colors MUST be HSL.
     --gradient-sunset: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--secondary)));
     --gradient-wave: linear-gradient(180deg, hsl(var(--primary) / 0.1), transparent);
 
-    /* Shadows */
-    --shadow-ocean: 0 10px 30px -10px hsl(var(--primary) / 0.3);
-    --shadow-coral: 0 5px 20px -5px hsl(var(--accent) / 0.2);
-    --shadow-gentle: 0 2px 8px -2px hsl(var(--primary) / 0.1);
+    /* Enhanced Shadows */
+    --shadow-ocean: 0 20px 60px -10px hsl(var(--primary) / 0.3);
+    --shadow-coral: 0 10px 40px -5px hsl(var(--accent) / 0.25);
+    --shadow-gentle: 0 4px 16px -2px hsl(var(--primary) / 0.12);
+    --shadow-premium: 0 30px 80px -20px hsl(var(--primary) / 0.4);
+    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.3);
+    --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+
+    /* Glass Morphism */
+    --glass-backdrop: backdrop-blur(16px) saturate(180%);
+    --glass-bg: hsla(var(--background), 0.75);
+    --glass-border: hsla(var(--border), 0.18);
 
     --sidebar-background: 0 0% 98%;
 
@@ -122,5 +130,61 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Glass Morphism Components */
+  .glass-card {
+    @apply backdrop-blur-xl bg-white/75 border border-white/20 shadow-glass;
+  }
+
+  .glass-modal {
+    @apply backdrop-blur-2xl bg-white/80 border border-white/30 shadow-premium;
+  }
+
+  /* Enhanced Interactive Elements */
+  .hover-lift {
+    @apply transition-all duration-300 ease-out hover:scale-105 hover:-translate-y-1 hover:shadow-premium;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-300 ease-out hover:shadow-glow;
+  }
+
+  .btn-premium {
+    @apply relative overflow-hidden bg-gradient-ocean text-white font-medium rounded-xl px-6 py-3 shadow-ocean transition-all duration-300 hover:scale-105 hover:shadow-premium;
+  }
+
+  .btn-premium::before {
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full transition-transform duration-700;
+    content: '';
+  }
+
+  .btn-premium:hover::before {
+    @apply translate-x-full;
+  }
+
+  /* Typography Enhancements */
+  .text-gradient {
+    @apply bg-gradient-ocean bg-clip-text text-transparent font-bold;
+  }
+
+  /* Skeleton Loaders */
+  .skeleton {
+    @apply animate-pulse bg-muted rounded;
+  }
+
+  .skeleton-text {
+    @apply skeleton h-4 w-full;
+  }
+
+  .skeleton-avatar {
+    @apply skeleton h-12 w-12 rounded-full;
+  }
+
+  /* Copy Button Enhancement */
+  .copy-success {
+    @apply animate-scale-in bg-emerald-500 text-white;
   }
 }
