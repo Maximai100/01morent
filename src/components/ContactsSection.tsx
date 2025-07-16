@@ -17,32 +17,34 @@ export const ContactsSection = () => {
           </div>
           <p className="text-sm text-muted-foreground ml-8">Поддержка 24/7</p>
           
-          <div className="flex items-center gap-4 mt-6">
-            <a 
-              href="https://instagram.com/morent.sochi" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors"
-            >
-              <Instagram className="w-5 h-5 text-primary" />
-              <span className="text-sm font-medium">@morent.sochi</span>
-            </a>
-            
-            <a 
-              href="https://t.me/morentsochi" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors"
-            >
-              <Send className="w-5 h-5 text-primary" />
-              <span className="text-sm font-medium">Telegram</span>
-            </a>
+          <div className="flex flex-col gap-4 mt-6">
+            <div className="flex flex-wrap items-center gap-4">
+              <a 
+                href="https://instagram.com/morent.sochi" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors"
+              >
+                <Instagram className="w-5 h-5 text-primary" />
+                <span className="text-sm font-medium">@morent.sochi</span>
+              </a>
+              
+              <a 
+                href="https://t.me/morentsochi" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors"
+              >
+                <Send className="w-5 h-5 text-primary" />
+                <span className="text-sm font-medium">Telegram</span>
+              </a>
+            </div>
             
             <a 
               href="https://wa.me/79628886449" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full hover:bg-primary/20 transition-colors w-fit"
             >
               <MessageCircle className="w-5 h-5 text-primary" />
               <span className="text-sm font-medium">WhatsApp</span>
@@ -70,7 +72,7 @@ export const ContactsSection = () => {
               <span className="font-medium">1.</span> Видео подъезда
             </p>
             <MediaDisplay 
-              category="checkin_videos" 
+              category="entrance_videos" 
               fallbackText="Видео подъезда (загружается из админ панели)"
               className="mt-3"
             />
@@ -80,7 +82,7 @@ export const ContactsSection = () => {
               <span className="font-medium">2.</span> Видео электронного замка
             </p>
             <MediaDisplay 
-              category="checkin_videos" 
+              category="lock_videos" 
               fallbackText="Видео электронного замка (загружается из админ панели)"
               className="mt-3"
             />

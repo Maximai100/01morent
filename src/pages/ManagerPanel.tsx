@@ -296,11 +296,15 @@ const ManagerPanel = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 <MediaUpload 
                   category="welcome_photos" 
-                  title="Фотографии для секции приветствия" 
+                  title="Фотографии приветствия"
                 />
                 <MediaUpload 
-                  category="checkin_videos" 
-                  title="Видео для раздела заселение" 
+                  category="entrance_videos" 
+                  title="Видео подъезда"
+                />
+                <MediaUpload 
+                  category="lock_videos" 
+                  title="Видео электронного замка"
                 />
                 <MediaUpload 
                   category="trash_location" 

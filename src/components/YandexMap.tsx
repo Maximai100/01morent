@@ -16,11 +16,11 @@ export const YandexMap = () => {
         className="rounded-xl overflow-hidden shadow-gentle cursor-pointer hover:shadow-ocean transition-shadow"
         onClick={() => {
           const address = encodeURIComponent("Нагорный тупик 13 корпус Б, Сочи");
-          window.open(`https://yandex.ru/maps/?text=${address}&rtext=~${address}`, '_blank');
+          window.open(`https://yandex.ru/maps/?text=${address}&rtext=~${address}&mode=routes`, '_blank');
         }}
       >
         <iframe
-          src="https://yandex.ru/map-widget/v1/?um=constructor%3A26dd2f36ad02e13ebb3ae6e93949b79c92ab0cc2c4c1c5b1e2bb0b4a3c5ac0cb&amp;source=constructor"
+          src="https://yandex.ru/map-widget/v1/?um=constructor%3A6bb5a4bdfd62d0b9b4cb5c6ca6b0fb4c93b9b8e3dae4e2ebb5dd1e03e7ef7c8a&amp;source=constructor&amp;ll=39.72722%2C43.600938&amp;z=16&amp;pt=39.72722%2C43.600938%2Cpm2rdm"
           width="100%"
           height="400"
           frameBorder="0"
