@@ -3,7 +3,7 @@ import { Phone, MessageCircle, Instagram, Send } from "lucide-react";
 import { MediaDisplay } from "@/components/MediaDisplay";
 import { WaveDivider } from "@/components/WaveDivider";
 
-export const ContactsSection = () => {
+export const ContactsSection = ({ contactInfo }: { contactInfo?: { phone: string; whatsapp: string; telegram: string } }) => {
   return (
     <>
       <Card className="p-8 shadow-premium hover-lift space-y-6 wave-divider">
@@ -15,8 +15,8 @@ export const ContactsSection = () => {
           <div className="space-y-4 text-foreground">
             <div className="flex items-center gap-3">
               <Phone className="w-6 h-6 text-gold" />
-              <a href="tel:88007005501" className="text-lg font-semibold hover:text-gold transition-colors">
-                8 800 700 55 01
+              <a href={`tel:${contactInfo?.phone || '88007005501'}`} className="text-lg font-semibold hover:text-gold transition-colors">
+                {contactInfo?.phone || '8 800 700 55 01'}
               </a>
             </div>
             <p className="text-sm text-muted-foreground ml-9 leading-relaxed">Поддержка 24/7</p>

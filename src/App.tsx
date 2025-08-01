@@ -8,6 +8,7 @@ import CheckinGuide from "./pages/CheckinGuide";
 import ManagerPanel from "./pages/ManagerPanel";
 import ApartmentsManager from "./pages/ApartmentsManager";
 import ApartmentDetail from "./pages/ApartmentDetail";
+import ApartmentLanding from "./pages/ApartmentLanding";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -19,11 +20,12 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<ApartmentsManager />} />
-          <Route path="/apartment/:apartmentId" element={<ApartmentDetail />} />
-          <Route path="/guide" element={<CheckinGuide />} />
+          <Route path="/" element={<Index />} />
           <Route path="/manager" element={<ManagerPanel />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/guide" element={<CheckinGuide />} />
+          <Route path="/apartments" element={<ApartmentsManager />} />
+          <Route path="/apartment/:apartmentId/manage" element={<ApartmentDetail />} />
+          <Route path="/apartment/:apartmentId" element={<ApartmentLanding />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

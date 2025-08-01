@@ -44,18 +44,21 @@ export const ApartmentContentEditor = ({ apartmentId }: ApartmentContentEditorPr
 
   const loadContent = async () => {
     try {
-      const { data, error } = await supabase
+      // Временно используем any для обхода проблем с типами пока они не обновятся
+      const { data, error } = await (supabase as any)
         .from('apartments')
         .select('*')
         .eq('id', apartmentId)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error loading content:', error);
         return;
       }
 
-      setContent(data);
+      if (data) {
+        setContent(data);
+      }
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -67,7 +70,8 @@ export const ApartmentContentEditor = ({ apartmentId }: ApartmentContentEditorPr
     if (!content) return;
 
     try {
-      const { error } = await supabase
+      // Временно используем any для обхода проблем с типами
+      const { error } = await (supabase as any)
         .from('apartments')
         .update({
           hero_title: content.hero_title,

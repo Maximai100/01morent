@@ -1,14 +1,25 @@
 import { Card } from "@/components/ui/card";
 import { MapPin, Navigation } from "lucide-react";
 
-export const YandexMap = () => {
+interface YandexMapProps {
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+  address?: string;
+}
+
+export const YandexMap = ({ 
+  coordinates = { lat: 43.5855, lng: 39.7231 },
+  address = "Нагорный тупик 13 корпус Б, Сочи"
+}: YandexMapProps) => {
   return (
     <Card className="stagger-item p-8 shadow-premium hover-lift overflow-hidden">
       <div className="flex items-center gap-4 mb-6">
         <MapPin className="w-8 h-8 text-gold" />
         <div>
           <h3 className="uppercase text-gradient">МЕСТОПОЛОЖЕНИЕ</h3>
-          <p className="text-muted-foreground leading-relaxed">Нагорный тупик 13 корпус Б, Сочи</p>
+          <p className="text-muted-foreground leading-relaxed">{address}</p>
         </div>
       </div>
       
@@ -16,8 +27,8 @@ export const YandexMap = () => {
         <div 
           className="group rounded-xl overflow-hidden shadow-gentle cursor-pointer hover:shadow-premium transition-all duration-300 hover-lift border-2 border-primary/20 hover:border-gold/40 relative"
           onClick={() => {
-            const address = encodeURIComponent("Нагорный тупик 13 корпус Б, Сочи");
-            window.open(`https://yandex.ru/maps/?text=${address}&rtext=~${address}&mode=routes`, '_blank');
+            const encodedAddress = encodeURIComponent(address);
+            window.open(`https://yandex.ru/maps/?text=${encodedAddress}&rtext=~${encodedAddress}&mode=routes`, '_blank');
           }}
         >
           <iframe

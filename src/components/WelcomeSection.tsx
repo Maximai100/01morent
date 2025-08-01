@@ -31,7 +31,6 @@ export const WelcomeSection = ({ guestName, checkInDate }: WelcomeSectionProps) 
           category="welcome_photos" 
           fallbackText="Фотографии добавляются через панель администратора"
           className="min-h-[400px] px-8 pb-8"
-          horizontal={true}
         />
       </Card>
       <WaveDivider variant="subtle" />

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { MessageCircle, Heart } from "lucide-react";
 import { WaveDivider } from "@/components/WaveDivider";
 
-export const LoyaltySection = () => {
+export const LoyaltySection = ({ info }: { info?: string }) => {
   return (
     <>
       <Card className="p-8 shadow-premium hover-lift bg-gradient-to-br from-gold/10 via-accent/5 to-secondary/20 border-2 border-gold/20">
@@ -15,7 +15,7 @@ export const LoyaltySection = () => {
         </div>
       
         <div className="space-y-6 text-left text-foreground mb-8">
-          <p className="text-center leading-relaxed">Если вам было комфортно с нами, поддержите Morent — это очень помогает нам развиваться:</p>
+          <p className="text-center leading-relaxed">{info || 'Если вам было комфортно с нами, поддержите Morent — это очень помогает нам развиваться:'}</p>
           
           <div className="space-y-4">
             <div className="flex items-start gap-3 p-4 bg-white/50 rounded-xl border border-gold/20">

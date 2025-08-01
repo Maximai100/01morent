@@ -56,18 +56,21 @@ const ApartmentLanding = () => {
     if (!apartmentId) return;
 
     try {
-      const { data, error } = await supabase
+      // Временно используем any для обхода проблем с типами
+      const { data, error } = await (supabase as any)
         .from('apartments')
         .select('*')
         .eq('id', apartmentId)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error loading apartment:', error);
         return;
       }
 
-      setApartment(data);
+      if (data) {
+        setApartment(data);
+      }
     } catch (error) {
       console.error('Error:', error);
     } finally {
