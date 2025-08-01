@@ -12,6 +12,7 @@ const CheckinGuide = () => {
   
   // Get data from URL parameters
   const guestData = {
+    guestName: searchParams.get('guest') || '',
     apartmentNumber: searchParams.get('apartment') || '169',
     checkIn: searchParams.get('checkin') || '08.06.2025 в 15:00',
     checkOut: searchParams.get('checkout') || '09.06.2025 в 12:00',
@@ -24,7 +25,7 @@ const CheckinGuide = () => {
     <div className="min-h-screen bg-gradient-wave">
       <div className="max-w-4xl mx-auto space-y-8 p-4 md:p-6 lg:p-8">
         <div className="stagger-item"><HeroSection apartmentNumber={guestData.apartmentNumber} /></div>
-        <div className="stagger-item"><WelcomeSection /></div>
+        <div className="stagger-item"><WelcomeSection guestName={guestData.guestName} checkInDate={guestData.checkIn} /></div>
         <div className="stagger-item"><ApartmentInfo {...guestData} /></div>
         <div className="stagger-item"><ContactsSection /></div>
         <div className="stagger-item"><ApartmentFAQ /></div>
