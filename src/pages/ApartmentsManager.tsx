@@ -49,26 +49,41 @@ const ApartmentsManager = () => {
   }, []);
 
   const loadApartments = async () => {
-    // Временные моковые данные пока типы не обновились
-    const mockApartments: Apartment[] = [
-      {
-        id: "1",
-        name: "Апартамент у моря",
-        number: "169",
-        description: "Красивый апартамент с видом на море",
-        address: "Нагорный тупик 13 корпус Б, Сочи",
-        wifi_password: "логин/пароль",
-        entrance_code: "#2020",
-        lock_code: "1111"
+    try {
+      const { data, error } = await supabase
+        .from('apartments')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error loading apartments:', error);
+        toast.error('Ошибка загрузки апартаментов');
+        return;
       }
-    ];
-    setApartments(mockApartments);
+
+      setApartments(data || []);
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('Ошибка подключения к базе данных');
+    }
   };
 
   const loadGuests = async () => {
-    // Временные моковые данные
-    const mockGuests: Guest[] = [];
-    setGuests(mockGuests);
+    try {
+      const { data, error } = await supabase
+        .from('guests')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error loading guests:', error);
+        return;
+      }
+
+      setGuests(data || []);
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   const saveApartment = async () => {
@@ -77,39 +92,66 @@ const ApartmentsManager = () => {
       return;
     }
 
-    // Временно просто добавляем в стейт
-    const newApartment: Apartment = {
-      id: Date.now().toString(),
-      name: apartmentForm.name,
-      number: apartmentForm.number,
-      description: apartmentForm.description || null,
-      address: apartmentForm.address || null,
-      wifi_password: apartmentForm.wifi_password || null,
-      entrance_code: apartmentForm.entrance_code || null,
-      lock_code: apartmentForm.lock_code || null
-    };
+    try {
+      if (selectedApartment) {
+        // Обновление существующего апартамента
+        const { error } = await supabase
+          .from('apartments')
+          .update({
+            name: apartmentForm.name,
+            number: apartmentForm.number,
+            description: apartmentForm.description || null,
+            address: apartmentForm.address || null,
+            wifi_password: apartmentForm.wifi_password || null,
+            entrance_code: apartmentForm.entrance_code || null,
+            lock_code: apartmentForm.lock_code || null
+          })
+          .eq('id', selectedApartment.id);
 
-    if (selectedApartment) {
-      setApartments(prev => prev.map(apt => 
-        apt.id === selectedApartment.id ? { ...newApartment, id: selectedApartment.id } : apt
-      ));
-      toast.success('Апартамент обновлен');
-    } else {
-      setApartments(prev => [...prev, newApartment]);
-      toast.success('Апартамент создан');
+        if (error) {
+          toast.error('Ошибка обновления апартамента');
+          return;
+        }
+        toast.success('Апартамент обновлен');
+      } else {
+        // Создание нового апартамента
+        const { error } = await supabase
+          .from('apartments')
+          .insert({
+            name: apartmentForm.name,
+            number: apartmentForm.number,
+            description: apartmentForm.description || null,
+            address: apartmentForm.address || null,
+            wifi_password: apartmentForm.wifi_password || null,
+            entrance_code: apartmentForm.entrance_code || null,
+            lock_code: apartmentForm.lock_code || null
+          });
+
+        if (error) {
+          toast.error('Ошибка создания апартамента');
+          return;
+        }
+        toast.success('Апартамент создан');
+      }
+
+      // Перезагружаем данные
+      await loadApartments();
+      
+      setShowApartmentForm(false);
+      setSelectedApartment(null);
+      setApartmentForm({
+        name: "",
+        number: "",
+        description: "",
+        address: "",
+        wifi_password: "",
+        entrance_code: "",
+        lock_code: ""
+      });
+    } catch (error) {
+      console.error('Error saving apartment:', error);
+      toast.error('Ошибка сохранения');
     }
-
-    setShowApartmentForm(false);
-    setSelectedApartment(null);
-    setApartmentForm({
-      name: "",
-      number: "",
-      description: "",
-      address: "",
-      wifi_password: "",
-      entrance_code: "",
-      lock_code: ""
-    });
   };
 
   const editApartment = (apartment: Apartment) => {
@@ -131,10 +173,37 @@ const ApartmentsManager = () => {
       return;
     }
 
-    // Временно просто удаляем из стейта
-    setApartments(prev => prev.filter(apt => apt.id !== apartmentId));
-    setGuests(prev => prev.filter(guest => guest.apartment_id !== apartmentId));
-    toast.success('Апартамент удален');
+    try {
+      // Сначала удаляем связанных гостей
+      await supabase
+        .from('guests')
+        .delete()
+        .eq('apartment_id', apartmentId);
+
+      // Удаляем медиафайлы
+      await supabase
+        .from('media_files')
+        .delete()
+        .eq('apartment_id', apartmentId);
+
+      // Затем удаляем сам апартамент
+      const { error } = await supabase
+        .from('apartments')
+        .delete()
+        .eq('id', apartmentId);
+
+      if (error) {
+        toast.error('Ошибка удаления апартамента');
+        return;
+      }
+
+      toast.success('Апартамент удален');
+      await loadApartments();
+      await loadGuests();
+    } catch (error) {
+      console.error('Error deleting apartment:', error);
+      toast.error('Ошибка удаления');
+    }
   };
 
   const getGuestsForApartment = (apartmentId: string) => {
