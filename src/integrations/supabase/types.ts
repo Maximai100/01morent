@@ -14,8 +14,107 @@ export type Database = {
   }
   public: {
     Tables: {
+      apartments: {
+        Row: {
+          address: string | null
+          contact_info: Json | null
+          created_at: string
+          description: string | null
+          entrance_code: string | null
+          faq_data: Json | null
+          hero_subtitle: string | null
+          hero_title: string | null
+          id: string
+          lock_code: string | null
+          loyalty_info: string | null
+          map_coordinates: Json | null
+          name: string
+          number: string
+          updated_at: string
+          wifi_password: string | null
+        }
+        Insert: {
+          address?: string | null
+          contact_info?: Json | null
+          created_at?: string
+          description?: string | null
+          entrance_code?: string | null
+          faq_data?: Json | null
+          hero_subtitle?: string | null
+          hero_title?: string | null
+          id?: string
+          lock_code?: string | null
+          loyalty_info?: string | null
+          map_coordinates?: Json | null
+          name: string
+          number: string
+          updated_at?: string
+          wifi_password?: string | null
+        }
+        Update: {
+          address?: string | null
+          contact_info?: Json | null
+          created_at?: string
+          description?: string | null
+          entrance_code?: string | null
+          faq_data?: Json | null
+          hero_subtitle?: string | null
+          hero_title?: string | null
+          id?: string
+          lock_code?: string | null
+          loyalty_info?: string | null
+          map_coordinates?: Json | null
+          name?: string
+          number?: string
+          updated_at?: string
+          wifi_password?: string | null
+        }
+        Relationships: []
+      }
+      guests: {
+        Row: {
+          apartment_id: string
+          check_in_date: string
+          check_out_date: string
+          created_at: string
+          guide_link: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          apartment_id: string
+          check_in_date: string
+          check_out_date: string
+          created_at?: string
+          guide_link?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          apartment_id?: string
+          check_in_date?: string
+          check_out_date?: string
+          created_at?: string
+          guide_link?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guests_apartment_id_fkey"
+            columns: ["apartment_id"]
+            isOneToOne: false
+            referencedRelation: "apartments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       media_files: {
         Row: {
+          apartment_id: string | null
           category: string
           created_at: string
           description: string | null
@@ -26,6 +125,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          apartment_id?: string | null
           category: string
           created_at?: string
           description?: string | null
@@ -36,6 +136,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          apartment_id?: string | null
           category?: string
           created_at?: string
           description?: string | null
@@ -45,7 +146,15 @@ export type Database = {
           id?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "media_files_apartment_id_fkey"
+            columns: ["apartment_id"]
+            isOneToOne: false
+            referencedRelation: "apartments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
