@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MediaUpload } from "@/components/MediaUpload";
+import { ApartmentContentEditor } from "@/components/ApartmentContentEditor";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -165,9 +166,10 @@ const ApartmentDetail = () => {
         </div>
 
         <Tabs defaultValue="guests" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="guests">Управление гостями</TabsTrigger>
             <TabsTrigger value="media">Медиа файлы</TabsTrigger>
+            <TabsTrigger value="content">Контент</TabsTrigger>
           </TabsList>
 
           <TabsContent value="guests" className="space-y-6">
@@ -306,6 +308,10 @@ const ApartmentDetail = () => {
                 onUploadSuccess={() => toast.success('Видео загружено')}
               />
             </div>
+          </TabsContent>
+
+          <TabsContent value="content" className="space-y-6">
+            <ApartmentContentEditor apartmentId={apartmentId!} />
           </TabsContent>
         </Tabs>
       </div>
