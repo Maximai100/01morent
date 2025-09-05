@@ -1,19 +1,20 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Plus, Edit, Trash2, Calendar, User, Phone, Mail, ArrowLeft } from "lucide-react";
+import { Plus, Edit, Trash2, Calendar, User, Phone, Mail, ArrowLeft, Upload, Image, Video, FileText } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useDirectusApartments, useDirectusBookings } from "@/hooks/useDirectus";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useDirectusApartments, useDirectusBookings, useDirectusMedia } from "@/hooks/useDirectus";
 import { toast } from "sonner";
 import { DirectusBooking } from "@/integrations/directus/client";
 
 const ApartmentDetailDirectus = () => {
   const { apartmentId } = useParams();
-  const { getApartmentById } = useDirectusApartments();
+  const { getApartmentById, updateApartment } = useDirectusApartments();
   const { 
     bookings, 
     loading: bookingsLoading, 
@@ -23,6 +24,8 @@ const ApartmentDetailDirectus = () => {
     getBookingsByApartment 
   } = useDirectusBookings();
 
+  const { uploadFile, getFilesByFolder, deleteFile, uploading } = useDirectusMedia();
+  
   const [apartment, setApartment] = useState<any>(null);
   const [apartmentGuests, setApartmentGuests] = useState<DirectusBooking[]>([]);
   const [showGuestForm, setShowGuestForm] = useState(false);
@@ -36,6 +39,20 @@ const ApartmentDetailDirectus = () => {
     special_requests: "",
     status: "pending" as "pending" | "confirmed" | "checked_in" | "checked_out" | "cancelled"
   });
+
+  // Состояние для медиафайлов
+  const [apartmentPhotos, setApartmentPhotos] = useState<any[]>([]);
+  const [apartmentVideos, setApartmentVideos] = useState<any[]>([]);
+  const [entranceVideo, setEntranceVideo] = useState<any[]>([]);
+  const [lockVideo, setLockVideo] = useState<any[]>([]);
+
+  // Состояние для FAQ
+  const [faqForm, setFaqForm] = useState({
+    faq_checkin: "",
+    faq_apartment: "",
+    faq_area: ""
+  });
+  const [showFaqForm, setShowFaqForm] = useState(false);
 
   useEffect(() => {
     if (apartmentId) {
@@ -55,9 +72,45 @@ const ApartmentDetailDirectus = () => {
     try {
       const apartmentData = await getApartmentById(apartmentId);
       setApartment(apartmentData);
+      
+      // Загружаем FAQ данные
+      if (apartmentData) {
+        setFaqForm({
+          faq_checkin: apartmentData.faq_checkin || "",
+          faq_apartment: apartmentData.faq_apartment || "",
+          faq_area: apartmentData.faq_area || ""
+        });
+      }
+      
+      // Загружаем медиафайлы
+      await loadMediaFiles();
     } catch (error) {
       console.error('Error loading apartment:', error);
       toast.error('Ошибка загрузки апартамента');
+    }
+  };
+
+  const loadMediaFiles = async () => {
+    if (!apartmentId) return;
+    
+    try {
+      // Загружаем фото апартамента
+      const photos = await getFilesByFolder(`apartment-${apartmentId}-photos`);
+      setApartmentPhotos(photos.filter(file => file.type.startsWith('image/')));
+      
+      // Загружаем видео апартамента
+      const videos = await getFilesByFolder(`apartment-${apartmentId}-videos`);
+      setApartmentVideos(videos.filter(file => file.type.startsWith('video/')));
+      
+      // Загружаем видео подъезда
+      const entranceVideos = await getFilesByFolder(`apartment-${apartmentId}-entrance`);
+      setEntranceVideo(entranceVideos.filter(file => file.type.startsWith('video/')));
+      
+      // Загружаем видео замка
+      const lockVideos = await getFilesByFolder(`apartment-${apartmentId}-lock`);
+      setLockVideo(lockVideos.filter(file => file.type.startsWith('video/')));
+    } catch (error) {
+      console.error('Error loading media files:', error);
     }
   };
 
@@ -156,6 +209,53 @@ const ApartmentDetailDirectus = () => {
     toast.success('Ссылка скопирована в буфер обмена');
   };
 
+  // Функции для работы с медиафайлами
+  const handleFileUpload = async (file: File, category: string) => {
+    if (!apartmentId) return;
+    
+    try {
+      const folderName = `apartment-${apartmentId}-${category}`;
+      await uploadFile(file, folderName);
+      toast.success('Файл загружен успешно');
+      await loadMediaFiles(); // Перезагружаем медиафайлы
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      toast.error('Ошибка загрузки файла');
+    }
+  };
+
+  const handleFileDelete = async (fileId: string) => {
+    if (!confirm('Вы уверены, что хотите удалить этот файл?')) return;
+    
+    try {
+      await deleteFile(fileId);
+      toast.success('Файл удален успешно');
+      await loadMediaFiles(); // Перезагружаем медиафайлы
+    } catch (error) {
+      console.error('Error deleting file:', error);
+      toast.error('Ошибка удаления файла');
+    }
+  };
+
+  // Функции для работы с FAQ
+  const saveFaq = async () => {
+    if (!apartmentId) return;
+    
+    try {
+      await updateApartment(apartmentId, {
+        faq_checkin: faqForm.faq_checkin,
+        faq_apartment: faqForm.faq_apartment,
+        faq_area: faqForm.faq_area
+      });
+      toast.success('FAQ обновлены успешно');
+      setShowFaqForm(false);
+      await loadApartment(); // Перезагружаем данные апартамента
+    } catch (error) {
+      console.error('Error saving FAQ:', error);
+      toast.error('Ошибка сохранения FAQ');
+    }
+  };
+
   if (!apartment) {
     return (
       <div className="min-h-screen bg-gradient-wave flex items-center justify-center">
@@ -183,17 +283,38 @@ const ApartmentDetailDirectus = () => {
               </Button>
               <div>
                 <h1 className="text-4xl font-bold font-playfair text-primary mb-2">
-                  {apartment.name}
+                  {apartment.title}
                 </h1>
                 <p className="text-muted-foreground">
-                  Номер: {apartment.number} • Управление гостями
+                  Апартаменты {apartment.apartment_number}{apartment.building_number} • Управление
                 </p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Tabs defaultValue="bookings" className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="bookings" className="flex items-center gap-2">
+              <User className="w-4 h-4" />
+              Бронирования
+            </TabsTrigger>
+            <TabsTrigger value="media" className="flex items-center gap-2">
+              <Image className="w-4 h-4" />
+              Медиафайлы
+            </TabsTrigger>
+            <TabsTrigger value="faq" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              FAQ
+            </TabsTrigger>
+            <TabsTrigger value="info" className="flex items-center gap-2">
+              <Phone className="w-4 h-4" />
+              Информация
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="bookings" className="mt-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Guests List */}
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-6">
@@ -402,6 +523,335 @@ const ApartmentDetailDirectus = () => {
               </Card>
             </div>
           )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="media" className="mt-6">
+            <div className="space-y-6">
+              <h2 className="text-2xl font-semibold text-primary">Медиафайлы апартамента</h2>
+              
+              {/* Фотографии апартамента */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Image className="w-5 h-5" />
+                    Фотографии апартамента
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={(e) => {
+                          if (e.target.files) {
+                            Array.from(e.target.files).forEach(file => {
+                              handleFileUpload(file, 'photos');
+                            });
+                          }
+                        }}
+                        className="hidden"
+                        id="apartment-photos"
+                      />
+                      <label htmlFor="apartment-photos">
+                        <Button asChild disabled={uploading}>
+                          <span className="cursor-pointer">
+                            <Upload className="w-4 h-4 mr-2" />
+                            {uploading ? 'Загрузка...' : 'Загрузить фотографии'}
+                          </span>
+                        </Button>
+                      </label>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {apartmentPhotos.map((photo) => (
+                        <div key={photo.id} className="relative group">
+                          <img
+                            src={`https://1.cycloscope.online/assets/${photo.id}`}
+                            alt={photo.filename_download}
+                            className="w-full h-32 object-cover rounded-lg"
+                          />
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => handleFileDelete(photo.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Видео подъезда */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Video className="w-5 h-5" />
+                    Видео подъезда
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <input
+                        type="file"
+                        accept="video/*"
+                        onChange={(e) => {
+                          if (e.target.files?.[0]) {
+                            handleFileUpload(e.target.files[0], 'entrance');
+                          }
+                        }}
+                        className="hidden"
+                        id="entrance-video"
+                      />
+                      <label htmlFor="entrance-video">
+                        <Button asChild disabled={uploading}>
+                          <span className="cursor-pointer">
+                            <Upload className="w-4 h-4 mr-2" />
+                            {uploading ? 'Загрузка...' : 'Загрузить видео подъезда'}
+                          </span>
+                        </Button>
+                      </label>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {entranceVideo.map((video) => (
+                        <div key={video.id} className="relative group">
+                          <video
+                            controls
+                            className="w-full h-48 rounded-lg"
+                            preload="metadata"
+                          >
+                            <source src={`https://1.cycloscope.online/assets/${video.id}`} type={video.type} />
+                          </video>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => handleFileDelete(video.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Видео электронного замка */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Video className="w-5 h-5" />
+                    Видео электронного замка
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <input
+                        type="file"
+                        accept="video/*"
+                        onChange={(e) => {
+                          if (e.target.files?.[0]) {
+                            handleFileUpload(e.target.files[0], 'lock');
+                          }
+                        }}
+                        className="hidden"
+                        id="lock-video"
+                      />
+                      <label htmlFor="lock-video">
+                        <Button asChild disabled={uploading}>
+                          <span className="cursor-pointer">
+                            <Upload className="w-4 h-4 mr-2" />
+                            {uploading ? 'Загрузка...' : 'Загрузить видео замка'}
+                          </span>
+                        </Button>
+                      </label>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {lockVideo.map((video) => (
+                        <div key={video.id} className="relative group">
+                          <video
+                            controls
+                            className="w-full h-48 rounded-lg"
+                            preload="metadata"
+                          >
+                            <source src={`https://1.cycloscope.online/assets/${video.id}`} type={video.type} />
+                          </video>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => handleFileDelete(video.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="faq" className="mt-6">
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-semibold text-primary">FAQ Тексты</h2>
+                <Button onClick={() => setShowFaqForm(true)}>
+                  <Edit className="w-4 h-4 mr-2" />
+                  Редактировать FAQ
+                </Button>
+              </div>
+
+              <div className="grid gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>FAQ по заселению</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="whitespace-pre-line text-sm text-muted-foreground">
+                      {apartment.faq_checkin || 'Не заполнено'}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>FAQ по апартаментам</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="whitespace-pre-line text-sm text-muted-foreground">
+                      {apartment.faq_apartment || 'Не заполнено'}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>FAQ по району</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="whitespace-pre-line text-sm text-muted-foreground">
+                      {apartment.faq_area || 'Не заполнено'}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {showFaqForm && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Редактирование FAQ</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="faq_checkin">FAQ по заселению</Label>
+                        <Textarea
+                          id="faq_checkin"
+                          value={faqForm.faq_checkin}
+                          onChange={(e) => setFaqForm(prev => ({ ...prev, faq_checkin: e.target.value }))}
+                          placeholder="Введите информацию о заселении..."
+                          rows={5}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="faq_apartment">FAQ по апартаментам</Label>
+                        <Textarea
+                          id="faq_apartment"
+                          value={faqForm.faq_apartment}
+                          onChange={(e) => setFaqForm(prev => ({ ...prev, faq_apartment: e.target.value }))}
+                          placeholder="Введите информацию об апартаментах..."
+                          rows={5}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="faq_area">FAQ по району</Label>
+                        <Textarea
+                          id="faq_area"
+                          value={faqForm.faq_area}
+                          onChange={(e) => setFaqForm(prev => ({ ...prev, faq_area: e.target.value }))}
+                          placeholder="Введите информацию о районе..."
+                          rows={5}
+                        />
+                      </div>
+                      <div className="flex gap-2">
+                        <Button onClick={saveFaq}>Сохранить</Button>
+                        <Button variant="outline" onClick={() => setShowFaqForm(false)}>Отмена</Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="info" className="mt-6">
+            <div className="space-y-6">
+              <h2 className="text-2xl font-semibold text-primary">Информация об апартаменте</h2>
+              
+              <div className="grid gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Основная информация</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <strong>Название:</strong> {apartment.title}
+                      </div>
+                      <div>
+                        <strong>Номер:</strong> {apartment.apartment_number}{apartment.building_number}
+                      </div>
+                      <div>
+                        <strong>Адрес:</strong> {apartment.base_address}
+                      </div>
+                      <div>
+                        <strong>Код подъезда:</strong> {apartment.code_building || 'Не указан'}
+                      </div>
+                      <div>
+                        <strong>Код замка:</strong> {apartment.code_lock || 'Не указан'}
+                      </div>
+                      <div>
+                        <strong>WiFi пароль:</strong> {apartment.wifi_password || 'Не указан'}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Контактная информация</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <strong>Менеджер:</strong> {apartment.manager_name || 'Не указан'}
+                      </div>
+                      <div>
+                        <strong>Телефон:</strong> {apartment.manager_phone || 'Не указан'}
+                      </div>
+                      <div className="col-span-2">
+                        <strong>Email:</strong> {apartment.manager_email || 'Не указан'}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
         </div>
       </div>
     </div>

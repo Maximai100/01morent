@@ -91,11 +91,38 @@ const ApartmentLanding = () => {
       
       <WaveDivider />
       
-      <MediaDisplay apartmentId={apartment.id} />
+      <div className="space-y-8">
+        <MediaDisplay apartmentId={apartment.id} category="photos" fallbackText="Фотографии скоро появятся" />
+        
+        {/* Видео подъезда */}
+        <div className="stagger-item">
+          <h3 className="mb-6 uppercase text-left text-gradient">ВИДЕО ПОДЪЕЗДА</h3>
+          <MediaDisplay apartmentId={apartment.id} category="entrance" fallbackText="Видео подъезда скоро появится" />
+        </div>
+        
+        {/* Видео электронного замка */}
+        <div className="stagger-item">
+          <h3 className="mb-6 uppercase text-left text-gradient">ВИДЕО ЭЛЕКТРОННОГО ЗАМКА</h3>
+          <MediaDisplay apartmentId={apartment.id} category="lock" fallbackText="Видео замка скоро появится" />
+        </div>
+      </div>
       
       <WaveDivider />
       
-      <ApartmentFAQ faqs={[]} />
+      <ApartmentFAQ faqs={[
+        ...(apartment.faq_checkin ? [{
+          question: "Информация о заселении",
+          answer: apartment.faq_checkin
+        }] : []),
+        ...(apartment.faq_apartment ? [{
+          question: "Информация об апартаментах",
+          answer: apartment.faq_apartment
+        }] : []),
+        ...(apartment.faq_area ? [{
+          question: "Информация о районе",
+          answer: apartment.faq_area
+        }] : [])
+      ]} />
       
       <WaveDivider />
       

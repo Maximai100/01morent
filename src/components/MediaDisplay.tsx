@@ -46,7 +46,7 @@ export const MediaDisplay = ({ apartmentId, category, fallbackText, className }:
 
   const loadMedia = async () => {
     try {
-      const folderName = category || `apartment-${apartmentId}`;
+      const folderName = category ? `apartment-${apartmentId}-${category}` : `apartment-${apartmentId}`;
       
       const mediaFiles = await getFilesByFolder(folderName);
       
@@ -102,7 +102,7 @@ export const MediaDisplay = ({ apartmentId, category, fallbackText, className }:
                     <DialogTrigger asChild>
                       <div className="cursor-pointer group overflow-hidden rounded-xl shadow-gentle hover:shadow-premium transition-all duration-300 hover-lift">
                         <img
-                          src={`/api/assets/${photo.id}`}
+                          src={`https://1.cycloscope.online/assets/${photo.id}`}
                           alt={photo.description || photo.title || photo.filename_download}
                           className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
                           loading="lazy"
@@ -111,7 +111,7 @@ export const MediaDisplay = ({ apartmentId, category, fallbackText, className }:
                     </DialogTrigger>
                     <DialogContent className="max-w-4xl w-full">
                       <img
-                        src={`/api/assets/${photo.id}`}
+                        src={`https://1.cycloscope.online/assets/${photo.id}`}
                         alt={photo.description || photo.title || photo.filename_download}
                         className="w-full h-auto max-h-[80vh] object-contain"
                         loading="lazy"
@@ -140,7 +140,7 @@ export const MediaDisplay = ({ apartmentId, category, fallbackText, className }:
                   className="w-full h-64 object-cover"
                   preload="metadata"
                 >
-                  <source src={`/api/assets/${video.id}`} type={video.type} />
+                  <source src={`https://1.cycloscope.online/assets/${video.id}`} type={video.type} />
                   Ваш браузер не поддерживает воспроизведение видео.
                 </video>
               </div>
