@@ -65,6 +65,8 @@ export interface DirectusSchema {
 // Конфигурация Directus
 const DIRECTUS_URL = import.meta.env.VITE_DIRECTUS_URL || 'http://localhost:8055';
 const DIRECTUS_TOKEN = import.meta.env.VITE_DIRECTUS_TOKEN || '';
+const APARTMENTS_COLLECTION = import.meta.env.VITE_APARTMENTS_COLLECTION || 'apartments';
+const BOOKINGS_COLLECTION = import.meta.env.VITE_BOOKINGS_COLLECTION || 'bookings';
 
 // Создание клиента Directus
 export const directus = createDirectus<DirectusSchema>(DIRECTUS_URL)
@@ -93,7 +95,7 @@ export const apartmentsAPI = {
     await authenticateDirectus();
     try {
       console.log('Fetching apartments from Directus...');
-      const result = await directus.request(readItems('apartments', {
+      const result = await directus.request(readItems(APARTMENTS_COLLECTION, {
         sort: ['-date_created']
       }));
       console.log('Apartments fetched successfully:', result.length, 'items');
@@ -108,7 +110,7 @@ export const apartmentsAPI = {
   getById: async (id: string): Promise<DirectusApartment | null> => {
     await authenticateDirectus();
     try {
-      const apartments = await directus.request(readItems('apartments', {
+      const apartments = await directus.request(readItems(APARTMENTS_COLLECTION, {
         filter: { id: { _eq: id } },
         limit: 1
       }));
@@ -122,19 +124,19 @@ export const apartmentsAPI = {
   // Создать новый апартамент
   create: async (apartment: Omit<DirectusApartment, 'id' | 'date_created' | 'date_updated'>): Promise<DirectusApartment> => {
     await authenticateDirectus();
-    return await directus.request(createItem('apartments', apartment));
+    return await directus.request(createItem(APARTMENTS_COLLECTION, apartment));
   },
 
   // Обновить апартамент
   update: async (id: string, apartment: Partial<DirectusApartment>): Promise<DirectusApartment> => {
     await authenticateDirectus();
-    return await directus.request(updateItem('apartments', id, apartment));
+    return await directus.request(updateItem(APARTMENTS_COLLECTION, id, apartment));
   },
 
   // Удалить апартамент
   delete: async (id: string): Promise<void> => {
     await authenticateDirectus();
-    await directus.request(deleteItem('apartments', id));
+    await directus.request(deleteItem(APARTMENTS_COLLECTION, id));
   }
 };
 
@@ -143,7 +145,7 @@ export const bookingsAPI = {
   // Получить все бронирования
   getAll: async (): Promise<DirectusBooking[]> => {
     await authenticateDirectus();
-    return await directus.request(readItems('bookings', {
+    return await directus.request(readItems(BOOKINGS_COLLECTION, {
       sort: ['-date_created']
     }));
   },
@@ -151,7 +153,7 @@ export const bookingsAPI = {
   // Получить бронирования по апартаменту
   getByApartment: async (apartmentId: string): Promise<DirectusBooking[]> => {
     await authenticateDirectus();
-    return await directus.request(readItems('bookings', {
+    return await directus.request(readItems(BOOKINGS_COLLECTION, {
       filter: { apartment_id: { _eq: apartmentId } },
       sort: ['-date_created']
     }));
@@ -161,7 +163,7 @@ export const bookingsAPI = {
   getById: async (id: string): Promise<DirectusBooking | null> => {
     await authenticateDirectus();
     try {
-      const bookings = await directus.request(readItems('bookings', {
+      const bookings = await directus.request(readItems(BOOKINGS_COLLECTION, {
         filter: { id: { _eq: id } },
         limit: 1
       }));
@@ -176,7 +178,7 @@ export const bookingsAPI = {
   getBySlug: async (slug: string): Promise<DirectusBooking | null> => {
     await authenticateDirectus();
     try {
-      const bookings = await directus.request(readItems('bookings', {
+      const bookings = await directus.request(readItems(BOOKINGS_COLLECTION, {
         filter: { slug: { _eq: slug } },
         limit: 1
       }));
@@ -190,19 +192,19 @@ export const bookingsAPI = {
   // Создать новое бронирование
   create: async (booking: Omit<DirectusBooking, 'id' | 'date_created' | 'date_updated'>): Promise<DirectusBooking> => {
     await authenticateDirectus();
-    return await directus.request(createItem('bookings', booking));
+    return await directus.request(createItem(BOOKINGS_COLLECTION, booking));
   },
 
   // Обновить бронирование
   update: async (id: string, booking: Partial<DirectusBooking>): Promise<DirectusBooking> => {
     await authenticateDirectus();
-    return await directus.request(updateItem('bookings', id, booking));
+    return await directus.request(updateItem(BOOKINGS_COLLECTION, id, booking));
   },
 
   // Удалить бронирование
   delete: async (id: string): Promise<void> => {
     await authenticateDirectus();
-    await directus.request(deleteItem('bookings', id));
+    await directus.request(deleteItem(BOOKINGS_COLLECTION, id));
   }
 };
 

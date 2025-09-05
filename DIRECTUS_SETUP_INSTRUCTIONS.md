@@ -13,6 +13,10 @@
 # Directus Configuration
 VITE_DIRECTUS_URL=https://1.cycloscope.online
 VITE_DIRECTUS_TOKEN=your_directus_token_here
+
+# Collection names (if different from default)
+VITE_APARTMENTS_COLLECTION=apartments
+VITE_BOOKINGS_COLLECTION=bookings
 ```
 
 ### 2. Получите токен доступа в Directus
@@ -35,7 +39,21 @@ VITE_DIRECTUS_URL=https://1.cycloscope.online
 VITE_DIRECTUS_TOKEN=abc123def456ghi789...
 ```
 
-### 4. Перезапустите приложение
+### 4. Проверьте имена коллекций (если нужно)
+
+Если у вас коллекции называются по-другому (не `apartments` и `bookings`), обновите переменные в `.env`:
+
+```env
+VITE_APARTMENTS_COLLECTION=your_apartments_collection_name
+VITE_BOOKINGS_COLLECTION=your_bookings_collection_name
+```
+
+**Как узнать имена коллекций:**
+1. Откройте админ-панель Directus
+2. Перейдите в **Content** → **Collections**
+3. Найдите ваши коллекции и скопируйте их точные имена
+
+### 5. Перезапустите приложение
 
 После создания файла `.env` перезапустите сервер разработки:
 
