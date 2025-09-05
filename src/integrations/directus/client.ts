@@ -74,7 +74,15 @@ export const directus = createDirectus<DirectusSchema>(DIRECTUS_URL)
 // Функция для аутентификации (если используется токен)
 export const authenticateDirectus = async () => {
   if (DIRECTUS_TOKEN) {
-    await directus.setToken(DIRECTUS_TOKEN);
+    try {
+      await directus.setToken(DIRECTUS_TOKEN);
+      console.log('Directus token set successfully');
+    } catch (error) {
+      console.error('Error setting Directus token:', error);
+      throw error;
+    }
+  } else {
+    console.warn('No Directus token provided');
   }
 };
 
@@ -83,9 +91,17 @@ export const apartmentsAPI = {
   // Получить все апартаменты
   getAll: async (): Promise<DirectusApartment[]> => {
     await authenticateDirectus();
-    return await directus.request(readItems('apartments', {
-      sort: ['-created_at']
-    }));
+    try {
+      console.log('Fetching apartments from Directus...');
+      const result = await directus.request(readItems('apartments', {
+        sort: ['-date_created']
+      }));
+      console.log('Apartments fetched successfully:', result.length, 'items');
+      return result;
+    } catch (error) {
+      console.error('Error fetching apartments:', error);
+      throw error;
+    }
   },
 
   // Получить апартамент по ID
@@ -104,7 +120,7 @@ export const apartmentsAPI = {
   },
 
   // Создать новый апартамент
-  create: async (apartment: Omit<DirectusApartment, 'id' | 'created_at' | 'updated_at'>): Promise<DirectusApartment> => {
+  create: async (apartment: Omit<DirectusApartment, 'id' | 'date_created' | 'date_updated'>): Promise<DirectusApartment> => {
     await authenticateDirectus();
     return await directus.request(createItem('apartments', apartment));
   },
