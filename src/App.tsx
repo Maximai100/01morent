@@ -7,8 +7,11 @@ import Index from "./pages/Index";
 import CheckinGuide from "./pages/CheckinGuide";
 import ManagerPanel from "./pages/ManagerPanel";
 import ApartmentsManager from "./pages/ApartmentsManager";
+import ApartmentsManagerDirectus from "./pages/ApartmentsManagerDirectus";
 import ApartmentDetail from "./pages/ApartmentDetail";
+import ApartmentDetailDirectus from "./pages/ApartmentDetailDirectus";
 import ApartmentLanding from "./pages/ApartmentLanding";
+import MigrationPage from "./pages/MigrationPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,7 +27,10 @@ const App = () => (
           <Route path="/manager" element={<ManagerPanel />} />
           <Route path="/guide" element={<CheckinGuide />} />
           <Route path="/apartments" element={<ApartmentsManager />} />
+          <Route path="/apartments-directus" element={<ApartmentsManagerDirectus />} />
+          <Route path="/migration" element={<MigrationPage />} />
           <Route path="/apartment/:apartmentId/manage" element={<ApartmentDetail />} />
+          <Route path="/apartment/:apartmentId/manage-directus" element={<ApartmentDetailDirectus />} />
           <Route path="/apartment/:apartmentId" element={<ApartmentLanding />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
