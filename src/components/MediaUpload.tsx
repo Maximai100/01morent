@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useDirectusMedia } from "@/hooks/useDirectus";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,17 +16,41 @@ interface MediaUploadProps {
 
 interface MediaFile {
   id: string;
-  filename: string;
-  file_path: string;
-  file_type: 'image' | 'video';
-  description: string;
+  filename_download: string;
+  title?: string;
+  description?: string;
+  type: string;
+  filesize: number;
+  width?: number;
+  height?: number;
+  duration?: number;
+  folder?: string;
 }
 
 export const MediaUpload = ({ category, title, onUploadSuccess }: MediaUploadProps) => {
+  const { uploadFile, getFilesByFolder } = useDirectusMedia();
   const { toast } = useToast();
   const [files, setFiles] = useState<MediaFile[]>([]);
   const [uploading, setUploading] = useState(false);
   const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    loadFiles();
+  }, [category]);
+
+  const loadFiles = async () => {
+    try {
+      const mediaFiles = await getFilesByFolder(category);
+      setFiles(mediaFiles);
+    } catch (error) {
+      console.error('Error loading files:', error);
+      toast({
+        title: "Ошибка загрузки",
+        description: "Не удалось загрузить список файлов",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileList = event.target.files;
@@ -36,39 +60,7 @@ export const MediaUpload = ({ category, title, onUploadSuccess }: MediaUploadPro
 
     try {
       for (const file of Array.from(fileList)) {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-        const filePath = `${category}/${fileName}`;
-
-        // Upload file to storage
-        const { error: uploadError } = await supabase.storage
-          .from('media')
-          .upload(filePath, file);
-
-        if (uploadError) {
-          throw uploadError;
-        }
-
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('media')
-          .getPublicUrl(filePath);
-
-        // Save file metadata to database
-        const fileType = file.type.startsWith('video/') ? 'video' : 'image';
-        const { error: dbError } = await supabase
-          .from('media_files')
-          .insert({
-            filename: file.name,
-            file_path: publicUrl,
-            file_type: fileType,
-            category: category,
-            description: description || file.name
-          });
-
-        if (dbError) {
-          throw dbError;
-        }
+        await uploadFile(file, category);
       }
 
       toast({
@@ -78,9 +70,12 @@ export const MediaUpload = ({ category, title, onUploadSuccess }: MediaUploadPro
 
       setDescription("");
       loadFiles();
-      onUploadSuccess?.();
+      
+      if (onUploadSuccess) {
+        onUploadSuccess();
+      }
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error('Error uploading files:', error);
       toast({
         title: "Ошибка загрузки",
         description: "Не удалось загрузить файлы",
@@ -91,154 +86,103 @@ export const MediaUpload = ({ category, title, onUploadSuccess }: MediaUploadPro
     }
   };
 
-  const loadFiles = async () => {
-    const { data, error } = await supabase
-      .from('media_files')
-      .select('*')
-      .eq('category', category)
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      setFiles(data as MediaFile[]);
-    }
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  const deleteFile = async (fileId: string, filePath: string) => {
-    try {
-      // Extract file path from public URL
-      const pathParts = filePath.split('/media/');
-      const storagePath = pathParts[1];
-
-      // Delete from storage
-      const { error: storageError } = await supabase.storage
-        .from('media')
-        .remove([storagePath]);
-
-      if (storageError) {
-        throw storageError;
-      }
-
-      // Delete from database
-      const { error: dbError } = await supabase
-        .from('media_files')
-        .delete()
-        .eq('id', fileId);
-
-      if (dbError) {
-        throw dbError;
-      }
-
-      toast({
-        title: "Файл удален",
-        description: "Файл успешно удален",
-      });
-
-      loadFiles();
-    } catch (error) {
-      console.error('Delete error:', error);
-      toast({
-        title: "Ошибка удаления",
-        description: "Не удалось удалить файл",
-        variant: "destructive",
-      });
+  const getFileIcon = (type: string) => {
+    if (type.startsWith('image/')) {
+      return <Image className="w-4 h-4" />;
+    } else if (type.startsWith('video/')) {
+      return <Video className="w-4 h-4" />;
     }
+    return <Upload className="w-4 h-4" />;
   };
-
-  useEffect(() => {
-    loadFiles();
-  }, [category]);
 
   return (
-    <Card className="p-6">
-      <h3 className="text-lg font-semibold text-primary mb-4">{title}</h3>
-      
-      <div className="space-y-4">
-        <div>
-          <Label htmlFor={`description-${category}`}>Описание</Label>
-          <Textarea
-            id={`description-${category}`}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Краткое описание файла"
-            className="mt-1"
-          />
-        </div>
-
-        <div>
-          <Label htmlFor={`file-${category}`}>Загрузить файлы</Label>
-          <Input
-            id={`file-${category}`}
-            type="file"
-            accept="image/*,video/*"
-            multiple
-            onChange={handleFileUpload}
+    <Card className="w-full">
+      <div className="p-6">
+        <h3 className="text-lg font-semibold mb-4">{title}</h3>
+        
+        {/* Upload Section */}
+        <div className="space-y-4 mb-6">
+          <div>
+            <Label htmlFor="file-upload">Выберите файлы</Label>
+            <Input
+              id="file-upload"
+              type="file"
+              multiple
+              accept="image/*,video/*"
+              onChange={handleFileUpload}
+              disabled={uploading}
+              className="mt-1"
+            />
+          </div>
+          
+          <div>
+            <Label htmlFor="description">Описание (опционально)</Label>
+            <Textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Описание файлов..."
+              className="mt-1"
+            />
+          </div>
+          
+          <Button
+            onClick={() => document.getElementById('file-upload')?.click()}
             disabled={uploading}
-            className="mt-1"
-          />
+            className="w-full"
+          >
+            <Upload className="w-4 h-4 mr-2" />
+            {uploading ? 'Загрузка...' : 'Загрузить файлы'}
+          </Button>
         </div>
 
-        <Button
-          onClick={() => document.getElementById(`file-${category}`)?.click()}
-          disabled={uploading}
-          className="w-full bg-gradient-ocean"
-        >
-          <Upload className="w-4 h-4 mr-2" />
-          {uploading ? "Загрузка..." : "Выбрать файлы"}
-        </Button>
-      </div>
-
-      {files.length > 0 && (
-        <div className="mt-6">
-          <h4 className="text-md font-medium text-foreground mb-3">Загруженные файлы:</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {files.map((file) => (
-              <div key={file.id} className="relative group">
-                <Card className="p-3">
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0">
-                      {file.file_type === 'video' ? (
-                        <Video className="w-8 h-8 text-accent" />
-                      ) : (
-                        <Image className="w-8 h-8 text-accent" />
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-foreground truncate">
-                        {file.filename}
+        {/* Files List */}
+        <div className="space-y-2">
+          <h4 className="font-medium">Загруженные файлы ({files.length})</h4>
+          {files.length === 0 ? (
+            <p className="text-muted-foreground text-sm">Файлы не найдены</p>
+          ) : (
+            <div className="space-y-2 max-h-64 overflow-y-auto">
+              {files.map((file) => (
+                <div
+                  key={file.id}
+                  className="flex items-center justify-between p-3 border rounded-lg"
+                >
+                  <div className="flex items-center space-x-3">
+                    {getFileIcon(file.type)}
+                    <div>
+                      <p className="text-sm font-medium">
+                        {file.title || file.filename_download}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {file.description}
+                        {formatFileSize(file.filesize)} • {file.type}
                       </p>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => deleteFile(file.id, file.file_path)}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
                   </div>
-                  {file.file_type === 'image' && (
-                    <img
-                      src={file.file_path}
-                      alt={file.description}
-                      className="w-full h-32 object-cover rounded mt-2"
-                    />
-                  )}
-                  {file.file_type === 'video' && (
-                    <video
-                      src={file.file_path}
-                      controls
-                      className="w-full h-32 object-cover rounded mt-2"
-                    />
-                  )}
-                </Card>
-              </div>
-            ))}
-          </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      // TODO: Implement delete functionality
+                      console.log('Delete file:', file.id);
+                    }}
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </Card>
   );
 };
