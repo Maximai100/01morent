@@ -18,16 +18,16 @@ const Index = () => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
-          <Link to="/manager" className="group">
+          <Link to="/apartments" className="group">
             <Button 
               variant="premium" 
               size="xl"
               className="w-full flex flex-col gap-4 group-hover:animate-float"
             >
-              <Settings className="w-16 h-16" />
+              <Database className="w-16 h-16" />
               <div>
-                <p className="text-xl font-bold">Панель менеджера</p>
-                <p className="text-base opacity-90">Создать инструкцию для гостя</p>
+                <p className="text-xl font-bold">Управление апартаментами</p>
+                <p className="text-base opacity-90">Создать бронирование</p>
               </div>
             </Button>
           </Link>
@@ -42,22 +42,6 @@ const Index = () => {
               <div>
                 <p className="text-xl font-bold text-primary">Инструкция для гостя</p>
                 <p className="text-base text-muted-foreground">Демо-версия</p>
-              </div>
-            </Button>
-          </Link>
-        </div>
-
-        <div className="mt-8">
-          <Link to="/apartments" className="group">
-            <Button 
-              variant="outline" 
-              size="xl"
-              className="w-full flex flex-col gap-4 group-hover:animate-float border-2 border-accent text-accent hover:bg-accent hover:text-white"
-            >
-              <Database className="w-16 h-16" />
-              <div>
-                <p className="text-xl font-bold">Управление апартаментами</p>
-                <p className="text-base opacity-90">Directus</p>
               </div>
             </Button>
           </Link>
