@@ -348,7 +348,7 @@ const ApartmentsManagerDirectus = () => {
                             variant="outline"
                             size="sm"
                             className="w-full"
-                            onClick={() => window.location.href = `/apartment/${apartment.id}/manage-directus`}
+                            onClick={() => window.location.href = `/apartment/${apartment.id}/manage`}
                           >
                             <ExternalLink className="w-4 h-4 mr-2" />
                             Управление бронированиями
