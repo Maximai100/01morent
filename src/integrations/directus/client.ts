@@ -31,8 +31,8 @@ export interface DirectusBooking {
   date_created: string;
   date_updated: string | null;
   guest_name: string;
-  checkin_date: string;
-  checkout_date: string;
+  checkin_date: string | null;
+  checkout_date: string | null;
   apartment_id: string;
   slug: string;
 }

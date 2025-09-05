@@ -20,7 +20,8 @@ export const BookingCard = ({
   apartmentNumber, 
   apartmentBuilding 
 }: BookingCardProps) => {
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return 'Дата не указана';
     return new Date(dateString).toLocaleDateString('ru-RU', {
       day: '2-digit',
       month: '2-digit',
@@ -32,10 +33,15 @@ export const BookingCard = ({
     const baseUrl = window.location.origin;
     const params = new URLSearchParams({
       guest: booking.guest_name,
-      apartment: `${apartmentNumber || ''}${apartmentBuilding || ''}`,
-      checkin: booking.checkin_date,
-      checkout: booking.checkout_date
+      apartment: `${apartmentNumber || ''}${apartmentBuilding || ''}`
     });
+    
+    if (booking.checkin_date) {
+      params.append('checkin', booking.checkin_date);
+    }
+    if (booking.checkout_date) {
+      params.append('checkout', booking.checkout_date);
+    }
     
     return `${baseUrl}/apartment/${booking.apartment_id}?${params.toString()}`;
   };

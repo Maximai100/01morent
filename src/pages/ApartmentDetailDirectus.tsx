@@ -62,8 +62,8 @@ const ApartmentDetailDirectus = () => {
   };
 
   const saveGuest = async () => {
-    if (!guestForm.guest_name || !guestForm.checkin_date || !guestForm.checkout_date) {
-      toast.error('Заполните обязательные поля');
+    if (!guestForm.guest_name) {
+      toast.error('Заполните имя гостя');
       return;
     }
 
@@ -77,8 +77,8 @@ const ApartmentDetailDirectus = () => {
         // Обновление существующего бронирования
         await updateBooking(selectedGuest.id, {
           guest_name: guestForm.guest_name,
-          checkin_date: guestForm.checkin_date,
-          checkout_date: guestForm.checkout_date
+          checkin_date: guestForm.checkin_date || null,
+          checkout_date: guestForm.checkout_date || null
         });
       } else {
         // Создание нового бронирования
@@ -86,8 +86,8 @@ const ApartmentDetailDirectus = () => {
         await createBooking({
           apartment_id: apartmentId,
           guest_name: guestForm.guest_name,
-          checkin_date: guestForm.checkin_date,
-          checkout_date: guestForm.checkout_date,
+          checkin_date: guestForm.checkin_date || null,
+          checkout_date: guestForm.checkout_date || null,
           slug: slug
         });
       }
@@ -238,7 +238,7 @@ const ApartmentDetailDirectus = () => {
                           <CardDescription className="flex items-center gap-4 mt-2">
                             <span className="flex items-center gap-1">
                               <Calendar className="w-4 h-4" />
-                              {new Date(guest.checkin_date).toLocaleDateString()} - {new Date(guest.checkout_date).toLocaleDateString()}
+                              {guest.checkin_date ? new Date(guest.checkin_date).toLocaleDateString() : 'Дата не указана'} - {guest.checkout_date ? new Date(guest.checkout_date).toLocaleDateString() : 'Дата не указана'}
                             </span>
                           </CardDescription>
                           <div className="mt-2">
