@@ -15,6 +15,7 @@ const ApartmentsManagerDirectus = () => {
   const { 
     apartments, 
     loading: apartmentsLoading, 
+    error: apartmentsError,
     createApartment, 
     updateApartment, 
     deleteApartment 
@@ -211,6 +212,32 @@ const ApartmentsManagerDirectus = () => {
               </p>
             </div>
           </div>
+          
+          {/* Отображение ошибки подключения */}
+          {apartmentsError && (
+            <Card className="mb-6 border-destructive bg-destructive/10">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-3">
+                  <Database className="w-5 h-5 text-destructive" />
+                  <div>
+                    <h3 className="font-semibold text-destructive">Ошибка подключения к Directus</h3>
+                    <p className="text-sm text-muted-foreground mt-1">{apartmentsError}</p>
+                    <div className="mt-3">
+                      <p className="text-xs text-muted-foreground">
+                        Для решения проблемы:
+                      </p>
+                      <ul className="text-xs text-muted-foreground mt-1 ml-4 list-disc">
+                        <li>Создайте файл <code className="bg-muted px-1 rounded">.env</code> в корне проекта</li>
+                        <li>Добавьте переменные <code className="bg-muted px-1 rounded">VITE_DIRECTUS_URL</code> и <code className="bg-muted px-1 rounded">VITE_DIRECTUS_TOKEN</code></li>
+                        <li>Получите токен в админ-панели Directus: Settings → Access Tokens</li>
+                        <li>Перезапустите сервер разработки</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

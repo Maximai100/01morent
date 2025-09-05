@@ -16,7 +16,20 @@ export const useDirectusApartments = () => {
       const data = await apartmentsAPI.getAll();
       setApartments(data);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Ошибка загрузки апартаментов';
+      let errorMessage = 'Ошибка загрузки апартаментов';
+      
+      if (err instanceof Error) {
+        if (err.message.includes('403')) {
+          errorMessage = 'Ошибка доступа к Directus. Проверьте настройки токена в файле .env';
+        } else if (err.message.includes('404')) {
+          errorMessage = 'Коллекция apartments не найдена в Directus';
+        } else if (err.message.includes('Network')) {
+          errorMessage = 'Ошибка сети. Проверьте подключение к Directus';
+        } else {
+          errorMessage = err.message;
+        }
+      }
+      
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
