@@ -47,22 +47,8 @@ const Index = () => {
           </Link>
         </div>
 
-        <div className="mt-8 grid md:grid-cols-2 gap-8">
+        <div className="mt-8">
           <Link to="/apartments" className="group">
-            <Button 
-              variant="outline" 
-              size="xl"
-              className="w-full flex flex-col gap-4 group-hover:animate-float border-2 border-primary text-primary hover:bg-primary hover:text-white"
-            >
-              <Map className="w-16 h-16" />
-              <div>
-                <p className="text-xl font-bold">Управление апартаментами</p>
-                <p className="text-base opacity-90">Supabase версия</p>
-              </div>
-            </Button>
-          </Link>
-
-          <Link to="/apartments-directus" className="group">
             <Button 
               variant="outline" 
               size="xl"
@@ -71,21 +57,8 @@ const Index = () => {
               <Database className="w-16 h-16" />
               <div>
                 <p className="text-xl font-bold">Управление апартаментами</p>
-                <p className="text-base opacity-90">Directus версия</p>
+                <p className="text-base opacity-90">Directus</p>
               </div>
-            </Button>
-          </Link>
-        </div>
-
-        <div className="mt-8">
-          <Link to="/migration" className="group">
-            <Button 
-              variant="outline" 
-              size="lg"
-              className="w-full flex items-center justify-center gap-3 group-hover:animate-float border-2 border-muted-foreground text-muted-foreground hover:border-primary hover:text-primary"
-            >
-              <Database className="w-5 h-5" />
-              <span className="font-medium">Миграция данных в Directus</span>
             </Button>
           </Link>
         </div>

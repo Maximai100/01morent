@@ -223,43 +223,6 @@ export const mediaAPI = {
 
 // Утилиты для работы с данными
 export const dataUtils = {
-  // Конвертировать апартамент из Supabase в Directus формат
-  convertApartmentToDirectus: (supabaseApartment: any): Omit<DirectusApartment, 'id' | 'date_created' | 'date_updated'> => {
-    return {
-      title: supabaseApartment.name || 'Апартаменты Морент',
-      apartment_number: supabaseApartment.number || '',
-      building_number: 'Б', // По умолчанию
-      base_address: supabaseApartment.address || 'Нагорный тупик 13',
-      description: supabaseApartment.description,
-      photos: null,
-      video_entrance: null,
-      video_lock: null,
-      wifi_name: null,
-      wifi_password: supabaseApartment.wifi_password,
-      code_building: supabaseApartment.entrance_code,
-      code_lock: supabaseApartment.lock_code,
-      faq_checkin: null,
-      faq_apartment: null,
-      faq_area: null,
-      map_embed_code: null,
-      manager_name: 'Морент',
-      manager_phone: '88007005501',
-      manager_email: 'morent_sochi@mail.ru'
-    };
-  },
-
-  // Конвертировать гостя из Supabase в Directus формат
-  convertGuestToDirectus: (supabaseGuest: any): Omit<DirectusBooking, 'id' | 'date_created' | 'date_updated'> => {
-    const slug = `${supabaseGuest.name.toLowerCase().replace(/\s+/g, '.')}.${Date.now()}`;
-    return {
-      apartment_id: supabaseGuest.apartment_id,
-      guest_name: supabaseGuest.name,
-      checkin_date: supabaseGuest.check_in_date,
-      checkout_date: supabaseGuest.check_out_date,
-      slug: slug
-    };
-  },
-
   // Генерировать слаг для бронирования
   generateSlug: (guestName: string): string => {
     const cleanName = guestName.toLowerCase().replace(/\s+/g, '.').replace(/[^a-z0-9.]/g, '');
