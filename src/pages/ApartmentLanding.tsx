@@ -9,35 +9,15 @@ import { ContactsSection } from "@/components/ContactsSection";
 import { LoyaltySection } from "@/components/LoyaltySection";
 import { YandexMap } from "@/components/YandexMap";
 import { WaveDivider } from "@/components/WaveDivider";
-import { supabase } from "@/integrations/supabase/client";
+import { useDirectusApartments } from "@/hooks/useDirectus";
+import { DirectusApartment } from "@/integrations/directus/client";
 
-interface Apartment {
-  id: string;
-  name: string;
-  number: string;
-  description: string | null;
-  address: string | null;
-  wifi_password: string | null;
-  entrance_code: string | null;
-  lock_code: string | null;
-  faq_data: any[];
-  hero_title: string;
-  hero_subtitle: string;
-  contact_info: {
-    phone: string;
-    whatsapp: string;
-    telegram: string;
-  };
-  map_coordinates: {
-    lat: number;
-    lng: number;
-  };
-  loyalty_info: string;
-}
+// Используем DirectusApartment вместо кастомного интерфейса
 
 const ApartmentLanding = () => {
   const { apartmentId } = useParams();
-  const [apartment, setApartment] = useState<Apartment | null>(null);
+  const { getApartmentById } = useDirectusApartments();
+  const [apartment, setApartment] = useState<DirectusApartment | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Получаем параметры из URL для персонализации
@@ -56,23 +36,12 @@ const ApartmentLanding = () => {
     if (!apartmentId) return;
 
     try {
-      // Временно используем any для обхода проблем с типами
-      const { data, error } = await (supabase as any)
-        .from('apartments')
-        .select('*')
-        .eq('id', apartmentId)
-        .maybeSingle();
-
-      if (error) {
-        console.error('Error loading apartment:', error);
-        return;
-      }
-
+      const data = await getApartmentById(apartmentId);
       if (data) {
         setApartment(data);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error loading apartment:', error);
     } finally {
       setLoading(false);
     }
@@ -100,8 +69,8 @@ const ApartmentLanding = () => {
   return (
     <div className="min-h-screen bg-gradient-wave">
       <HeroSection 
-        title={apartment.hero_title}
-        subtitle={apartment.hero_subtitle}
+        title={apartment.title}
+        subtitle={`Апартаменты ${apartment.apartment_number}${apartment.building_number}`}
       />
       
       <WelcomeSection 
@@ -112,11 +81,11 @@ const ApartmentLanding = () => {
       <WaveDivider />
       
       <ApartmentInfo
-        apartmentNumber={apartment.number}
+        apartmentNumber={`${apartment.apartment_number}${apartment.building_number}`}
         checkIn={checkInDate}
         checkOut={checkOutDate}
-        entranceCode={apartment.entrance_code || ''}
-        electronicLockCode={apartment.lock_code || ''}
+        entranceCode={apartment.code_building || ''}
+        electronicLockCode={apartment.code_lock || ''}
         wifiPassword={apartment.wifi_password || ''}
       />
       
@@ -126,22 +95,26 @@ const ApartmentLanding = () => {
       
       <WaveDivider />
       
-      <ApartmentFAQ faqs={apartment.faq_data} />
+      <ApartmentFAQ faqs={[]} />
       
       <WaveDivider />
       
       <YandexMap 
-        coordinates={apartment.map_coordinates}
-        address={apartment.address || ''}
+        coordinates={{ lat: 43.585472, lng: 39.723098 }}
+        address={apartment.base_address || ''}
       />
       
       <WaveDivider />
       
-      <ContactsSection contactInfo={apartment.contact_info} />
+      <ContactsSection contactInfo={{
+        phone: apartment.manager_phone || '88007005501',
+        whatsapp: apartment.manager_phone || '88007005501',
+        telegram: apartment.manager_phone || '88007005501'
+      }} />
       
       <WaveDivider />
       
-      <LoyaltySection info={apartment.loyalty_info} />
+      <LoyaltySection info="Спасибо за выбор наших апартаментов!" />
     </div>
   );
 };

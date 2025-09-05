@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
-import { Plus, Edit, Trash2, ExternalLink, Database, RefreshCw } from "lucide-react";
+import { Plus, Edit, Trash2, ExternalLink, Database, RefreshCw, Calendar, User } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useDirectusApartments, useDirectusBookings, useDataMigration } from "@/hooks/useDirectus";
+import { useDirectusApartments, useDirectusBookings } from "@/hooks/useDirectus";
+import { BookingCard } from "@/components/BookingCard";
 import { toast } from "sonner";
 import { DirectusApartment, DirectusBooking, dataUtils } from "@/integrations/directus/client";
 
@@ -22,14 +23,12 @@ const ApartmentsManagerDirectus = () => {
   const { 
     bookings, 
     loading: bookingsLoading, 
+    createBooking,
+    updateBooking,
+    deleteBooking,
     getBookingsByApartment 
   } = useDirectusBookings();
   
-  const { 
-    migrating, 
-    progress, 
-    migrateFromSupabase 
-  } = useDataMigration();
 
   const [showApartmentForm, setShowApartmentForm] = useState(false);
   const [selectedApartment, setSelectedApartment] = useState<DirectusApartment | null>(null);
@@ -173,17 +172,29 @@ const ApartmentsManagerDirectus = () => {
     }
   };
 
-  const handleMigration = async () => {
-    if (!confirm('Вы уверены, что хотите мигрировать данные из Supabase в Directus? Это может занять некоторое время.')) {
+  const handleEditBooking = (booking: DirectusBooking) => {
+    // Переходим на страницу управления апартаментом для редактирования бронирования
+    window.location.href = `/apartment/${booking.apartment_id}/manage`;
+  };
+
+  const handleDeleteBooking = async (bookingId: string) => {
+    if (!confirm('Вы уверены, что хотите удалить это бронирование?')) {
       return;
     }
 
     try {
-      await migrateFromSupabase();
+      await deleteBooking(bookingId);
+      // Обновляем список бронирований для апартамента
+      const updatedBookings = await getBookingsByApartment(bookingId);
+      setApartmentBookings(prev => ({
+        ...prev,
+        [bookingId]: updatedBookings
+      }));
     } catch (error) {
-      console.error('Error during migration:', error);
+      console.error('Error deleting booking:', error);
     }
   };
+
 
 
   return (
@@ -198,17 +209,6 @@ const ApartmentsManagerDirectus = () => {
               <p className="text-muted-foreground">
                 Управление апартаментами через Directus CMS
               </p>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                onClick={handleMigration}
-                disabled={migrating}
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <Database className="w-4 h-4" />
-                {migrating ? `Миграция... ${Math.round(progress)}%` : 'Мигрировать из Supabase'}
-              </Button>
             </div>
           </div>
         </div>
@@ -292,6 +292,30 @@ const ApartmentsManagerDirectus = () => {
                             <p><span className="font-medium">Телефон:</span> {apartment.manager_phone}</p>
                           )}
                         </div>
+                        
+                        {/* Показываем последние 3 бронирования */}
+                        {apartmentBookingsList.length > 0 && (
+                          <div className="mt-4 space-y-2">
+                            <h4 className="text-sm font-medium text-muted-foreground">Последние бронирования:</h4>
+                            <div className="space-y-2 max-h-32 overflow-y-auto">
+                              {apartmentBookingsList.slice(0, 3).map((booking) => (
+                                <BookingCard
+                                  key={booking.id}
+                                  booking={booking}
+                                  onEdit={handleEditBooking}
+                                  onDelete={handleDeleteBooking}
+                                  apartmentNumber={apartment.apartment_number}
+                                  apartmentBuilding={apartment.building_number}
+                                />
+                              ))}
+                              {apartmentBookingsList.length > 3 && (
+                                <p className="text-xs text-muted-foreground text-center">
+                                  И еще {apartmentBookingsList.length - 3} бронирований...
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        )}
                         <div className="mt-4">
                           <Button
                             variant="outline"
